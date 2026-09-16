@@ -1,0 +1,451 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+  background: #141518;
+  color: #e8e4da;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: #141518;
+}
+
+/* 분위기별 배경 — 캔버스는 투명, 빛 효과가 이 위에 가산 혼합으로 더해짐 */
+/* 실제 배경은 StudioBackground(SVG) — 이 색은 SVG 가 그려지기 전 잠깐 보이는 바탕 */
+.app[data-mood="studio"] {
+  background: #a0a0a0;
+}
+
+.studio-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.app[data-mood="studio"] .mood-switcher {
+  background: rgb(0 0 0 / 8%);
+}
+
+.app[data-mood="studio"] .mood-switcher__button {
+  color: rgb(40 41 44 / 70%);
+}
+
+.app[data-mood="studio"] .mood-switcher__button[aria-pressed="true"] {
+  background: rgb(255 255 255 / 70%);
+  color: #1f2023;
+}
+
+.app[data-mood="backlight"] {
+  background: radial-gradient(
+    90% 70% at 50% 42%,
+    #2f6fd6 0%,
+    #123a86 28%,
+    #06173a 60%,
+    #02060f 100%
+  );
+}
+
+/* [임시] 분위기 프리셋 비교 버튼 */
+.mood-switcher {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  backdrop-filter: blur(8px);
+}
+
+.mood-switcher__button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgb(232 228 218 / 70%);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mood-switcher__button[aria-pressed="true"] {
+  background: rgb(255 255 255 / 14%);
+  color: #ffffff;
+}
+
+.mood-switcher__button:focus-visible {
+  outline: 2px solid #8fb4ff;
+  outline-offset: 2px;
+}
+
+/* 소개 화면 막 — 배경·키보드 전체를 검은 반투명으로 덮음(흐림 없음), 자막만 이 위에 */
+.intro-veil {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+  opacity: 0;
+  transition: opacity 350ms ease;
+  pointer-events: none;
+}
+
+.intro-veil[data-visible="true"] {
+  opacity: 1;
+  transition-duration: 700ms;
+}
+
+/* 키보드 위 자막 — 완성 문장(ghost)으로 자리를 잡고 친 글자를 같은 칸 왼쪽부터 채움 */
+.typing-caption {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: max-content;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 40%);
+  /* 기준점(키보드 뒤 모서리 위) 바로 위에 자막 묶음(타이핑 줄 + 소개 줄) 아래 끝을 붙임 — 역광 정면 구도 기준 간격 */
+  transform: translate(-50%, calc(-100% - 64px));
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+.typing-caption__typed {
+  display: grid;
+  margin: 0;
+  font-size: clamp(28px, 2.8vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: pre;
+}
+
+/* 다 친 뒤 아래에 이어지는 소개 — 자리는 처음부터 잡혀 있어 타이핑 줄이 움직이지 않음 */
+.typing-caption__details {
+  display: grid;
+  gap: 4px;
+  width: min(80vw, 720px);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+
+.typing-caption__details[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.typing-caption__detail {
+  margin: 0;
+  font-size: clamp(16px, 1.25vw, 21px);
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.typing-caption__detail:first-child {
+  font-weight: 600;
+}
+
+.typing-caption[data-visible="true"] {
+  opacity: 1;
+  transition-duration: 700ms;
+}
+
+.typing-caption__ghost,
+.typing-caption__line {
+  grid-area: 1 / 1;
+}
+
+.typing-caption__ghost {
+  visibility: hidden;
+}
+
+/* 커서 — 소개 자막과 분해 화면 제목이 같은 모양을 씀 */
+.typing-caption__caret,
+.screen-copy__caret {
+  display: inline-block;
+  width: max(2px, 0.06em);
+  height: 1em;
+  margin-left: 0.06em;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+.typing-caption[data-typing="true"] .typing-caption__caret,
+.screen-copy__title[data-typing="true"] .screen-copy__caret {
+  animation: none;
+}
+
+/* 첫 화면 자유 입력 — 단어마다 키보드 위 빈 곳에, 글자 모양은 소개 자막과 같게 */
+.free-typing {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.free-typing__word {
+  position: absolute;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 2.8vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: pre;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 40%);
+  transform: translate(-50%, -50%);
+  /*
+    사라짐: 단어 전체가 자기 높이 20% 만큼 위로 스르륵 올라가며 투명해짐 (1초)
+    - 참고 aamm3929.tistory.com/4 의 "아래로 스르륵 사라짐"을 위 방향으로 뒤집음
+    - 시간은 useFreeTyping 의 FADE_OUT_MS 와 맞춤
+    - 둘 다 일정한 속도(linear): ease 는 앞 절반에 변화가 몰려 올라가자마자 확 꺼져 보임 → 올라간 만큼 투명해지게
+  */
+  transition:
+    opacity 1000ms linear,
+    transform 1000ms linear;
+}
+
+.free-typing__word[data-fading="true"] {
+  opacity: 0;
+  /* 가운데 맞춤 -50% 에 위로 20% 를 더함 */
+  transform: translate(-50%, -70%);
+}
+
+.free-typing__caret {
+  display: inline-block;
+  width: max(2px, 0.06em);
+  height: 1em;
+  margin-left: 0.06em;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: caret-blink 1s steps(1) 500ms infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/*
+  분해 화면 소개글 — 화면별 블록을 한 칸에 겹쳐 두고 현재 화면만 보이게
+  - 왼쪽 세로 가운데: 분해된 키보드는 위아래로 길게 쌓여 가운데 위쪽이 막히고, 좌우는 세 화면 모두 비어 있음
+*/
+.screen-copy {
+  position: absolute;
+  top: 50%;
+  left: max(24px, 6vw);
+  display: grid;
+  width: min(28vw, 440px);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.screen-copy__block {
+  display: grid;
+  gap: 12px;
+  grid-area: 1 / 1;
+  align-content: center;
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 40%);
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+.screen-copy__block[data-visible="true"] {
+  opacity: 1;
+  transition-duration: 700ms;
+}
+
+.screen-copy__line {
+  margin: 0;
+  font-size: clamp(15px, 1.1vw, 19px);
+  line-height: 1.6;
+  word-break: keep-all;
+  /* 마지막 줄에 서술어 한 단어만 떨어지지 않게 */
+  text-wrap: pretty;
+}
+
+/*
+  분해 화면 제목 — 소개 화면 타이핑 자막과 같은 크기·굵기
+  - 완성 제목(ghost)과 친 글자를 한 칸에 겹침 — 줄바꿈은 문장 안 \n 으로 직접 끊어 치는 중에도 줄 위치가 같음
+*/
+.screen-copy__title {
+  display: grid;
+  margin: 0;
+  font-size: clamp(28px, 2.8vw, 46px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+.screen-copy__title-ghost,
+.screen-copy__title-line {
+  grid-area: 1 / 1;
+}
+
+.screen-copy__title-ghost {
+  visibility: hidden;
+}
+
+/* 제목을 다 친 뒤 나타나는 설명·버튼 — 자리는 처음부터 잡혀 있어 제목이 움직이지 않음 */
+.screen-copy__rest {
+  display: grid;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+
+.screen-copy__rest[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* 마지막 분해 화면 — 프로젝트로 넘어가는 버튼 줄 (소개글 칸은 포인터를 통과시키므로 여기만 다시 받음) */
+.screen-copy__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  pointer-events: auto;
+}
+
+/* 같은 줄 두 버튼 높이를 맞추려고 채운 버튼도 투명 테두리 1px 유지 */
+.screen-copy__action {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  text-shadow: none;
+  cursor: pointer;
+}
+
+.screen-copy__action:hover:not(:disabled) {
+  background: rgb(255 255 255 / 14%);
+}
+
+.screen-copy__action--primary {
+  border-color: transparent;
+  background: #c9ab6b;
+  color: #0b1530;
+}
+
+.screen-copy__action--primary:hover:not(:disabled) {
+  background: #d9bb7a;
+}
+
+.screen-copy__action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.screen-copy__action:focus-visible {
+  outline: 2px solid #8fb4ff;
+  outline-offset: 2px;
+}
+
+/* 역광 첫 화면 시점 되돌리기 — 오른쪽 아래, 세로 중심을 화면 위치 점(bottom 56px + 8px 의 가운데)과 맞춤 */
+.reset-view {
+  position: absolute;
+  right: 24px;
+  bottom: 40px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
+  color: rgb(255 255 255 / 85%);
+  cursor: pointer;
+}
+
+.reset-view:hover {
+  background: rgb(255 255 255 / 16%);
+  color: #ffffff;
+}
+
+.reset-view:focus-visible {
+  outline: 2px solid #8fb4ff;
+  outline-offset: 2px;
+}
+
+/* 화면 위치 점 — 지금 화면은 긴 타원 + GMK Lazurite 금색(Esc 키캡 색), 나머지는 흰 원 */
+.screen-dots {
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.screen-dots__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ffffff;
+  transition:
+    width 300ms ease,
+    background-color 300ms ease;
+}
+
+.screen-dots__dot[data-current="true"] {
+  width: 24px;
+  background: #c9ab6b;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
