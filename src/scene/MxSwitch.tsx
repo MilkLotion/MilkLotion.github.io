@@ -16,6 +16,7 @@ import {
   TOP_HOUSING_GEOMETRY,
 } from './mxSwitchGeometry';
 import { applySwitchRim } from './rimLight';
+import { SNAP_DELTA } from './snap';
 
 /** 부품 벌어짐 감쇠 계수 */
 const EXPLODE_DAMPING = 3;
@@ -34,11 +35,16 @@ interface MxSwitchProps {
 export const MxSwitch = ({ position, isExploded, isPressed }: MxSwitchProps) => {
   const progressRef = useRef(0);
   const stemTravelRef = useRef(0);
+  /** 첫 프레임은 벌어짐 목표에 바로 놓음 — 스위치 분해 화면으로 바로 들어와도 부품이 벌어지는 장면이 없게 */
+  const isPlacedRef = useRef(false);
   const partGroupsRef = useRef<Partial<Record<SwitchPartId, Group | null>>>({});
   const springMeshRef = useRef<Mesh>(null);
 
   useFrame((_, delta) => {
-    const progress = MathUtils.damp(progressRef.current, isExploded ? 1 : 0, EXPLODE_DAMPING, delta);
+    const explodeStep = isPlacedRef.current ? delta : SNAP_DELTA;
+    isPlacedRef.current = true;
+
+    const progress = MathUtils.damp(progressRef.current, isExploded ? 1 : 0, EXPLODE_DAMPING, explodeStep);
     progressRef.current = progress;
 
     PART_IDS.forEach((partId) => {

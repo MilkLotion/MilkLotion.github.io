@@ -11,6 +11,9 @@ import type { KeycapStyle } from './lazurite';
 
 /** GMK ABS 더블샷 — 반광 표면 */
 const KEYCAP_ROUGHNESS = 0.42;
+/** 고른 키 표시 — Esc 키캡과 같은 금색으로 옅게 발광. 비스듬한 시점에서는 눌림만으로 구분이 안 됨 */
+const HIGHLIGHT_COLOR = '#c9ab6b';
+const HIGHLIGHT_INTENSITY = 0.8;
 
 interface KeycapProps {
   code: string;
@@ -22,11 +25,30 @@ interface KeycapProps {
   /** 끝까지 눌렀을 때 내려가는 거리 (u) */
   travel: number;
   isPressed: boolean;
+  /** 고른 키 — 옅은 금색 발광 */
+  isHighlighted: boolean;
   onPress: (code: string) => void;
   onRelease: (code: string) => void;
+  /** 마우스로 누른 순간 — 페이지가 키캡으로 무언가를 고를 때 (눌림 표시와 별개) */
+  onPointerSelect?: (code: string) => void;
+  /** 마우스가 올라가면 code, 벗어나면 null */
+  onHoverChange?: (code: string | null) => void;
 }
 
-const KeycapBase = ({ code, widthU, row, style, position, travel, isPressed, onPress, onRelease }: KeycapProps) => {
+const KeycapBase = ({
+  code,
+  widthU,
+  row,
+  style,
+  position,
+  travel,
+  isPressed,
+  isHighlighted,
+  onPress,
+  onRelease,
+  onPointerSelect,
+  onHoverChange,
+}: KeycapProps) => {
   const travelRef = useRef<Group>(null);
   const [isHovered, setIsHovered] = useState(false);
   useCursor(isHovered);
@@ -57,6 +79,14 @@ const KeycapBase = ({ code, widthU, row, style, position, travel, isPressed, onP
     [materials],
   );
 
+  // 고른 키 발광 — 재질은 스타일별로 만들어 두고 발광 속성만 바꿈 (three 객체 동기화라 Effect)
+  useEffect(() => {
+    new Set(materials).forEach((material) => {
+      material.emissive.set(isHighlighted ? HIGHLIGHT_COLOR : '#000000');
+      material.emissiveIntensity = isHighlighted ? HIGHLIGHT_INTENSITY : 1;
+    });
+  }, [materials, isHighlighted]);
+
   useFrame((_, delta) => {
     const group = travelRef.current;
     if (!group) return;
@@ -67,6 +97,7 @@ const KeycapBase = ({ code, widthU, row, style, position, travel, isPressed, onP
   const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     onPress(code);
+    onPointerSelect?.(code);
   };
 
   const handlePointerUp = () => {
@@ -76,12 +107,14 @@ const KeycapBase = ({ code, widthU, row, style, position, travel, isPressed, onP
   const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     setIsHovered(true);
+    onHoverChange?.(code);
   };
 
   // 누른 채 키 밖으로 벗어나면 pointerup 을 못 받음 — 이탈 시 해제
   const handlePointerOut = () => {
     setIsHovered(false);
     onRelease(code);
+    onHoverChange?.(null);
   };
 
   return (

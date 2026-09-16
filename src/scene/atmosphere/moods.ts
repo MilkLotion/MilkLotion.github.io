@@ -1,10 +1,9 @@
 import type { CameraPose } from "../explodeStages";
 
 /**
- * 첫 화면 분위기 프리셋 — 조명·배경 효과 묶음
- * - studio(스튜디오): 사진 역산 2D 배경 + 명함 보드, 화면 4시 방향 조명 — 시점 고정(회전 없음)
- * - backlight(역광): 푸른 역광과 광원 번짐, 키보드는 실루엣 윤곽 — 드래그 회전 가능
- * - [스펙 미확정] 사용자가 프리셋을 비교해 고르기 위한 단계 — 확정 후 하나만 남김
+ * 페이지별 분위기 프리셋 — 조명·배경 효과 묶음
+ * - backlight(역광): 소개 페이지(사이트 첫 페이지) — 푸른 역광과 광원 번짐, 키보드는 실루엣 윤곽, 드래그 회전 가능
+ * - studio(스튜디오): 프로젝트 페이지 첫 화면 — 사진 역산 2D 배경 + 명함 보드, 화면 4시 방향 조명, 시점 고정(회전 없음)
  */
 
 export type MoodId = "studio" | "backlight";
@@ -33,7 +32,6 @@ export interface StudioSpec {
 }
 
 export interface Mood {
-  label: string;
   /** 드래그로 카메라 회전 허용 — 2D 배경을 쓰는 스튜디오는 시점이 고정돼야 배경과 맞음 */
   allowRotate: boolean;
   ambient: number;
@@ -61,7 +59,6 @@ export interface Mood {
 
 export const MOODS: Readonly<Record<MoodId, Mood>> = {
   studio: {
-    label: "스튜디오",
     allowRotate: false,
     // 사진 명암 기준: 박스 앞면 왼쪽 #ac → 오른쪽 #d3, 윗면 #e2, 왼쪽 옆면 어두움, 키보드 오른쪽 옆면 가장 밝음
     // 균일광을 낮추고 거리 감쇠 스포트 비중을 키워 왼쪽→오른쪽 명암 차를 만듦
@@ -97,7 +94,6 @@ export const MOODS: Readonly<Record<MoodId, Mood>> = {
     dust: null,
   },
   backlight: {
-    label: "역광",
     allowRotate: true,
     // 앞면은 어둡게 두어 실루엣, 광원은 기본 카메라에서 키보드 뒷모서리에 걸리는 높이
     ambient: 0.05,
@@ -125,5 +121,3 @@ export const MOODS: Readonly<Record<MoodId, Mood>> = {
     dust: { count: 120, color: "#a9c8ff", opacity: 0.4 },
   },
 };
-
-export const MOOD_IDS: readonly MoodId[] = ["studio", "backlight"];

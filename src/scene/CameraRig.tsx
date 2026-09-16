@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
 
 import { DEFAULT_CAMERA_FOV, type CameraPose } from './explodeStages';
+import { SNAP_DELTA } from './snap';
 
 export type OrbitControlsRef = ComponentRef<typeof OrbitControls>;
 
@@ -50,6 +51,9 @@ export const CameraRig = ({ pose, poseKey, controlsRef }: CameraRigProps) => {
   /** 마지막으로 렌즈 이동을 적용한 값·화면 크기 — 바뀔 때만 다시 적용 */
   const appliedViewRef = useRef({ shift: 0, width: 0, height: 0 });
   const isMovingRef = useRef(false);
+  /** 첫 포즈를 받았는지 — 첫 포즈만 감쇠 없이 바로 놓음 (로딩 화면이 걷혔을 때 카메라가 날아오지 않게) */
+  const hasFirstPoseRef = useRef(false);
+  const snapNextFrameRef = useRef(false);
 
   useEffect(() => {
     goalTargetRef.current.set(...pose.target);
@@ -61,6 +65,11 @@ export const CameraRig = ({ pose, poseKey, controlsRef }: CameraRigProps) => {
     goalFovRef.current = pose.fov ?? DEFAULT_CAMERA_FOV;
     goalShiftRef.current = pose.viewShiftY ?? 0;
     isMovingRef.current = true;
+
+    if (!hasFirstPoseRef.current) {
+      hasFirstPoseRef.current = true;
+      snapNextFrameRef.current = true;
+    }
   }, [pose, poseKey, isPortrait]);
 
   // 사용자가 직접 돌리기 시작하면 위치 자동 이동 중단
@@ -77,14 +86,16 @@ export const CameraRig = ({ pose, poseKey, controlsRef }: CameraRigProps) => {
   }, [controlsRef]);
 
   useFrame((_, delta) => {
+    const step = snapNextFrameRef.current ? SNAP_DELTA : delta;
+
     if (camera instanceof PerspectiveCamera) {
       if (Math.abs(camera.fov - goalFovRef.current) >= SETTLE_FOV) {
-        camera.fov = MathUtils.damp(camera.fov, goalFovRef.current, CAMERA_DAMPING, delta);
+        camera.fov = MathUtils.damp(camera.fov, goalFovRef.current, CAMERA_DAMPING, step);
         camera.updateProjectionMatrix();
       }
 
       if (Math.abs(shiftRef.current - goalShiftRef.current) >= SETTLE_SHIFT) {
-        shiftRef.current = MathUtils.damp(shiftRef.current, goalShiftRef.current, CAMERA_DAMPING, delta);
+        shiftRef.current = MathUtils.damp(shiftRef.current, goalShiftRef.current, CAMERA_DAMPING, step);
       } else {
         shiftRef.current = goalShiftRef.current;
       }
@@ -113,9 +124,11 @@ export const CameraRig = ({ pose, poseKey, controlsRef }: CameraRigProps) => {
     const controls = controlsRef.current;
     if (!isMovingRef.current || !controls) return;
 
-    dampTowards(camera.position, goalPositionRef.current, delta);
-    dampTowards(controls.target, goalTargetRef.current, delta);
+    dampTowards(camera.position, goalPositionRef.current, step);
+    dampTowards(controls.target, goalTargetRef.current, step);
     controls.update();
+    // 위치까지 놓은 뒤에 해제 — 컨트롤이 아직 안 붙은 프레임이면 다음 프레임에 다시 바로 놓음
+    snapNextFrameRef.current = false;
 
     const hasArrived =
       camera.position.distanceTo(goalPositionRef.current) < SETTLE_DISTANCE &&

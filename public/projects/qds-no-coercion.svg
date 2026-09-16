@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Quantum Design System 이 소비처에 강요하지 않은 네 가지와 대신 한 것">
+  <style>
+    .t   { font-family: "IBM Plex Sans","Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif; }
+    .eb  { font-size: 20px; letter-spacing: .14em; fill: #8593a5; }
+    .h1  { font-size: 48px; font-weight: 600; fill: #16202e; letter-spacing: -.01em; }
+    .ch  { font-size: 17px; letter-spacing: .1em; fill: #8593a5; }
+    .axis{ font-size: 25px; font-weight: 600; fill: #16202e; }
+    .sol { font-size: 24px; fill: #16202e; }
+    .cost{ font-size: 17px; fill: #8593a5; }
+    .mono{ font-family: "IBM Plex Mono","Consolas",monospace; }
+    .dim { font-size: 17px; fill: #8593a5; }
+  </style>
+
+  <rect width="1600" height="900" fill="#f6f7f9"/>
+
+  <g class="t">
+    <text x="90" y="98" class="eb">QUANTUM DESIGN SYSTEM · 설계 원칙</text>
+    <text x="90" y="158" class="h1">소비처에 아무것도 강요하지 않는다</text>
+    <text x="90" y="200" class="cost" font-size="19">통제할 수 없는 것에 의존하면 그 의존은 소비처에서 깨지고, 깨진 자리는 라이브러리 저자가 볼 수 없습니다.</text>
+
+    <!-- table header -->
+    <line x1="90" y1="248" x2="1510" y2="248" stroke="#16202e" stroke-width="1.5"/>
+    <text x="118" y="284" class="ch">강요하지 않은 것</text>
+    <text x="590" y="284" class="ch">대신 한 것</text>
+    <line x1="90" y1="302" x2="1510" y2="302" stroke="#ccd4de" stroke-width="1"/>
+
+    <!-- row 1 -->
+    <circle cx="102" cy="345" r="5" fill="#1c6b5a"/>
+    <text x="124" y="353" class="axis">네트워크 환경</text>
+    <text x="590" y="345" class="sol">tgz + source-copy <tspan class="mono" font-size="22">dual-mode</tspan> 배포</text>
+    <text x="590" y="375" class="cost">강요했다면 — npm 의존으로 외부망에서 설치 자체가 불가</text>
+    <line x1="90" y1="404" x2="1510" y2="404" stroke="#e3e8ee" stroke-width="1"/>
+
+    <!-- row 2 -->
+    <circle cx="102" cy="447" r="5" fill="#1c6b5a"/>
+    <text x="124" y="455" class="axis">Tailwind 설정</text>
+    <text x="590" y="447" class="sol">런타임 attribute 선택자를 plain CSS 로 hand-roll</text>
+    <text x="590" y="477" class="cost">강요했다면 — variant 미등록 시 스타일이 통째로 빠짐</text>
+    <line x1="90" y1="506" x2="1510" y2="506" stroke="#e3e8ee" stroke-width="1"/>
+
+    <!-- row 3 -->
+    <circle cx="102" cy="549" r="5" fill="#1c6b5a"/>
+    <text x="124" y="557" class="axis">상태관리 선택</text>
+    <text x="590" y="549" class="sol">React 19 <tspan class="mono" font-size="22">useSyncExternalStore</tspan> 위에 per-field 구독 자체 구현</text>
+    <text x="590" y="579" class="cost">강요했다면 — 안 쓰는 소비처까지 상태관리 의존을 떠안음</text>
+    <line x1="90" y1="608" x2="1510" y2="608" stroke="#e3e8ee" stroke-width="1"/>
+
+    <!-- row 4 -->
+    <circle cx="102" cy="651" r="5" fill="#1c6b5a"/>
+    <text x="124" y="659" class="axis">패키지명 · 테마 비용</text>
+    <text x="590" y="651" class="sol">빌드 옵션 <tspan class="mono" font-size="22">--n</tspan> · <tspan class="mono" font-size="22">--theme</tspan> 으로 소비처마다 다르게 빌드</text>
+    <text x="590" y="681" class="cost">강요했다면 — 단일 패키지명에 3테마를 일괄 포함</text>
+    <line x1="90" y1="710" x2="1510" y2="710" stroke="#ccd4de" stroke-width="1"/>
+
+    <!-- tradeoff -->
+    <rect x="90" y="742" width="4" height="72" fill="#1c6b5a"/>
+    <text x="116" y="768" class="sol" font-size="22">대가도 있습니다 — 매번 직접 만드는 쪽을 골라 유지보수 대상이 늘었습니다.</text>
+    <text x="116" y="800" class="cost" font-size="20">소비처 3곳 · 변형 빌드 5종이 되면서 비로소 값을 했습니다.</text>
+
+    <line x1="90" y1="842" x2="1510" y2="842" stroke="#ccd4de" stroke-width="1"/>
+    <text x="90" y="876" class="dim">9카테고리 98컴포넌트 · 릴리스 태그 54 · 소비처 3곳 · 3테마 × 2패키지명 = 5종 tgz · CSS 파서 자체 구현 592줄</text>
+  </g>
+</svg>

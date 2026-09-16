@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import { FreeTypingLayer } from '../FreeTypingLayer';
 import { FREE_SCREEN, INTRO_SCREEN, SCREEN_COUNT, useBacklightScreens } from '../hooks/useBacklightScreens';
-import { useTypingSequence } from '../hooks/useTypingSequence';
+import { PROJECTS_HASH } from '../hooks/useHashRoute';
+import { useTypingSequence, type TypingDisplay } from '../hooks/useTypingSequence';
+import { LoadingScreen } from '../LoadingScreen';
 import { ResetViewButton } from '../ResetViewButton';
 import { buildTypingSteps, type TypingStep } from '../scene/dubeolsikTyping';
 import { KeyboardScene } from '../scene/KeyboardScene';
@@ -45,6 +47,8 @@ const SCREEN_COPY = [
 ] as const;
 
 const NO_STEPS: readonly TypingStep[] = [];
+/** 현재 화면도, 막 떠난 화면도 아닌 곳 — 비워 둬야 다시 들어올 때 설명 줄이 잠깐 비치지 않음 */
+const IDLE_DISPLAY: TypingDisplay = { text: '', isComplete: false };
 
 /** 화면별 자동 타이핑 — 소개 화면 인사말 + 분해 화면 제목, 한 번에 한 문장만 재생 */
 const TYPING_STEPS_BY_SCREEN = new Map<number, readonly TypingStep[]>([
@@ -52,40 +56,80 @@ const TYPING_STEPS_BY_SCREEN = new Map<number, readonly TypingStep[]>([
   ...SCREEN_COPY.map(({ screen, title }): [number, readonly TypingStep[]] => [screen, buildTypingSteps(title)]),
 ]);
 
+interface BacklightPageProps {
+  /** 프로젝트 페이지에서 돌아온 경우 — 첫 화면이 아니라 [프로젝트 보기]가 있던 마지막 화면부터 */
+  startsAtLastScreen: boolean;
+  /** 자동 타이핑을 이미 한 화면 — 다시 들어오면 치지 않고 다 친 상태로 */
+  typedScreens: ReadonlySet<number>;
+  /** 화면의 자동 타이핑이 첫 키를 눌렀을 때 — 이후 방문부터 건너뜀 */
+  onTypingStart: (screen: number) => void;
+}
+
 /**
- * 역광 페이지 — 푸른 역광 + 드래그 회전
+ * 역광 페이지 — 사이트 첫 페이지. 푸른 역광 + 드래그 회전
  * - 화면 흐름: 자유 회전·자유 입력 → 소개(반투명 막 + 자동 타이핑) → 분해 1·2·3단계 + 타이핑 제목·소개글 (useBacklightScreens)
  * - 반투명 막은 소개 화면부터 끝까지 유지
+ * - 마지막 화면 [프로젝트 보기] → 프로젝트 페이지(첫 화면 스튜디오)
  */
-export const BacklightPage = () => {
-  const { screen, stage } = useBacklightScreens();
+export const BacklightPage = ({ startsAtLastScreen, typedScreens, onTypingStart }: BacklightPageProps) => {
+  const { screen, stage } = useBacklightScreens(startsAtLastScreen);
   const isIntroScreen = screen === INTRO_SCREEN;
   const typingSteps = TYPING_STEPS_BY_SCREEN.get(screen) ?? NO_STEPS;
-  const typing = useTypingSequence(typingSteps, typingSteps.length > 0);
+
+  // 들어온 렌더에서 "이미 친 화면인지" 를 고정 — 이번 방문에서 첫 키를 눌러 기록이 늘어도 치던 문장이 완성 상태로 건너뛰지 않게
+  const [visit, setVisit] = useState(() => ({ screen, isRepeat: typedScreens.has(screen) }));
+  if (visit.screen !== screen) {
+    setVisit({ screen, isRepeat: typedScreens.has(screen) });
+  }
+
+  /** 3D 장면을 다 그렸는지 — 그 전엔 로딩 화면으로 가리고 자동 타이핑도 시작하지 않음 */
+  const [isSceneReady, setIsSceneReady] = useState(false);
+
+  const typing = useTypingSequence(typingSteps, typingSteps.length > 0 && isSceneReady, {
+    isSkipped: visit.isRepeat,
+    onStart: () => onTypingStart(screen),
+  });
   /** 시점 되돌리기 버튼을 누른 횟수 — 바뀔 때마다 같은 화면이라도 카메라를 처음 구도로 다시 옮김 */
   const [viewResetCount, setViewResetCount] = useState(0);
+
+  /**
+   * 화면별로 그릴 타이핑 상태
+   * - 현재 화면: 재생 중인 타이핑
+   * - 막 떠난 화면: 떠나기 직전 모습 그대로 — 사라지는 동안 제목·설명 줄이 바뀌지 않게
+   * - 그 밖: 빈 상태 — 화면 밖에서 설명 줄을 "보임" 으로 두면 들어오는 순간 사라지는 전환이 비침
+   */
+  const displayFor = (targetScreen: number): TypingDisplay => {
+    if (targetScreen === screen) return typing;
+
+    const { previous } = typing;
+    return previous && previous.steps === TYPING_STEPS_BY_SCREEN.get(targetScreen) ? previous : IDLE_DISPLAY;
+  };
+  const introDisplay = displayFor(INTRO_SCREEN);
 
   return (
     <>
       {/*
         화면이 바뀌거나 되돌리기를 누를 때마다 카메라를 그 화면 구도로 — 돌려 둔 각도로 소개가 시작되지 않게
         드래그 회전은 첫 화면에서만 — 소개·분해 화면은 정해진 구도로 고정
+        키 눌림은 첫 화면·소개 화면까지만 — 분해 화면은 제목 타이핑·방향키 이동 모두 키가 내려가지 않음
       */}
       <KeyboardScene
         stage={stage}
         moodId="backlight"
         autoPressedCode={typing.pressedCode}
+        isKeyPressVisible={screen <= INTRO_SCREEN}
         cameraPoseKey={`${screen}:${viewResetCount}`}
         isRotatable={screen === FREE_SCREEN}
+        onReady={() => setIsSceneReady(true)}
       >
-        {/* 소개 화면을 떠나 사라지는 동안은 완성 문장 그대로 — 다음 화면 제목이 비치지 않게 */}
+        {/* 소개 화면을 떠나 사라지는 동안은 떠나기 직전 모습 그대로 — 다음 화면 제목이 비치지 않게 */}
         <TypingCaption
           sentence={INTRO_SENTENCE}
-          text={isIntroScreen ? typing.text : INTRO_SENTENCE}
+          text={introDisplay.text}
           details={INTRO_DETAILS}
           isVisible={isIntroScreen}
           isTyping={isIntroScreen && typing.isTyping}
-          isComplete={!isIntroScreen || typing.isComplete}
+          isComplete={introDisplay.isComplete}
         />
       </KeyboardScene>
       {/* 항상 붙여 둠 — 한/영 전환은 어느 화면에서든 따라가고, 글자 입력은 첫 화면에서만 */}
@@ -96,8 +140,7 @@ export const BacklightPage = () => {
       <div className="screen-copy">
         {SCREEN_COPY.map(({ screen: copyScreen, title, description, hasProjectLinks }) => {
           const isCurrent = copyScreen === screen;
-          // 떠나며 사라지는 블록은 다 친 상태 그대로
-          const isComplete = !isCurrent || typing.isComplete;
+          const { text, isComplete } = displayFor(copyScreen);
 
           return (
             <section key={copyScreen} className="screen-copy__block" data-visible={isCurrent} inert={!isCurrent}>
@@ -107,7 +150,7 @@ export const BacklightPage = () => {
                   {title}
                 </span>
                 <span className="screen-copy__title-line" aria-hidden="true">
-                  {isCurrent ? typing.text : title}
+                  {text}
                   {isCurrent && <span className="screen-copy__caret" />}
                 </span>
               </h2>
@@ -115,10 +158,10 @@ export const BacklightPage = () => {
                 {description && <p className="screen-copy__line">{description}</p>}
                 {hasProjectLinks && (
                   <div className="screen-copy__actions">
-                    {/* [스펙 미확정] 사이트 안 프로젝트 소개 페이지 — 넣을 프로젝트·내용이 정해지면 연결 */}
-                    <button type="button" className="screen-copy__action screen-copy__action--primary" disabled>
+                    {/* 사이트 안 프로젝트 페이지로 — 해시 이동이라 뒤로 가기로 이 화면 흐름에 복귀 */}
+                    <a className="screen-copy__action screen-copy__action--primary" href={PROJECTS_HASH}>
                       프로젝트 보기
-                    </button>
+                    </a>
                     <a className="screen-copy__action" href={GITHUB_URL} target="_blank" rel="noreferrer">
                       GitHub
                     </a>
@@ -132,6 +175,7 @@ export const BacklightPage = () => {
       <ScreenDots count={SCREEN_COUNT} current={screen} />
       {/* 드래그로 돌려 볼 수 있는 첫 화면에서만 */}
       {screen === FREE_SCREEN && <ResetViewButton onClick={() => setViewResetCount((count) => count + 1)} />}
+      <LoadingScreen isVisible={!isSceneReady} />
     </>
   );
 };

@@ -1,7 +1,7 @@
-import { memo, useLayoutEffect, useRef, type ReactNode } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { BackSide, Mesh, type Group } from 'three';
 
 import { Atmosphere } from './atmosphere/Atmosphere';
@@ -27,6 +27,52 @@ const ShadowCasters = ({ children }: ShadowCastersProps) => {
   }, []);
 
   return <group ref={groupRef}>{children}</group>;
+};
+
+const NO_HELD_CODES: ReadonlySet<string> = new Set();
+
+/** 셰이더 컴파일이 끝난 뒤 실제로 그려 볼 프레임 수 — 그림자 맵·환경 맵·텍스처 업로드가 첫 몇 프레임에 몰림 */
+const READY_FRAMES = 3;
+
+interface SceneReadySignalProps {
+  onReady: () => void;
+}
+
+/**
+ * 첫 화면이 다 그려졌음을 알림 — 로딩 화면을 걷는 시점
+ * - 장면 재질의 셰이더를 compileAsync 로 미리 컴파일 → 이후 READY_FRAMES 장을 실제로 그린 뒤 onReady
+ * - 카메라·분해 이동은 첫 프레임에 목표로 바로 놓이므로(SNAP_DELTA) 이 시점엔 이미 제자리
+ */
+const SceneReadySignal = ({ onReady }: SceneReadySignalProps) => {
+  const gl = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+  const camera = useThree((state) => state.camera);
+  /** 컴파일 뒤 그린 프레임 수 — 컴파일 전 null */
+  const framesRef = useRef<number | null>(null);
+
+  // 렌더러 비동기 컴파일과 동기화 — 외부 작업이라 Effect 로 연결
+  useEffect(() => {
+    let isActive = true;
+    const startCounting = () => {
+      if (isActive) framesRef.current = 0;
+    };
+
+    // 실패해도 로딩 화면에 갇히지 않게 — 첫 프레임 컴파일에 맡기고 그대로 진행
+    gl.compileAsync(scene, camera).then(startCounting, startCounting);
+
+    return () => {
+      isActive = false;
+    };
+  }, [gl, scene, camera]);
+
+  useFrame(() => {
+    if (framesRef.current === null || framesRef.current >= READY_FRAMES) return;
+
+    framesRef.current += 1;
+    if (framesRef.current === READY_FRAMES) onReady();
+  });
+
+  return null;
 };
 
 interface SceneEnvironmentProps {
@@ -65,10 +111,20 @@ interface KeyboardSceneProps {
   moodId: MoodId;
   /** 자동 입력이 누르고 있는 키 */
   autoPressedCode?: string | null;
+  /** 키 눌림 표시 — 기본 켬. 끄면 자동 입력·사용자 입력 모두 키가 내려가지 않음 */
+  isKeyPressVisible?: boolean;
+  /** 계속 눌린 채 둘 키 — 참조가 유지돼야 불필요한 재계산이 없음 */
+  heldCodes?: ReadonlySet<string>;
+  /** 키캡을 마우스로 누른 순간 — 참조 유지 필요 (키캡 memo) */
+  onKeyPointerSelect?: (code: string) => void;
+  /** 키캡 위에 마우스가 올라가면 code, 벗어나면 null — 참조 유지 필요 (키캡 memo) */
+  onKeyHoverChange?: (code: string | null) => void;
   /** 값이 바뀌면 같은 포즈라도 카메라를 다시 옮김 — 사용자가 돌려 둔 각도를 화면 전환 때 되돌릴 때 */
   cameraPoseKey?: string | number;
   /** 드래그 회전 허용 — 넘기지 않으면 분위기 기본값(allowRotate) */
   isRotatable?: boolean;
+  /** 첫 화면을 다 그렸을 때 한 번 — 페이지가 로딩 화면을 걷는 데 씀 */
+  onReady?: () => void;
   /** 캔버스 안에 함께 그릴 요소 — 3D 기준점에 붙는 자막 등 */
   children?: ReactNode;
 }
@@ -84,8 +140,13 @@ export const KeyboardScene = ({
   stage,
   moodId,
   autoPressedCode = null,
+  isKeyPressVisible = true,
+  heldCodes = NO_HELD_CODES,
+  onKeyPointerSelect,
+  onKeyHoverChange,
   cameraPoseKey,
   isRotatable,
+  onReady,
   children,
 }: KeyboardSceneProps) => {
   const controlsRef = useRef<OrbitControlsRef>(null);
@@ -114,7 +175,14 @@ export const KeyboardScene = ({
       )}
 
       <ShadowCasters>
-        <Keyboard stage={stage} autoPressedCode={autoPressedCode} />
+        <Keyboard
+          stage={stage}
+          autoPressedCode={autoPressedCode}
+          isKeyPressVisible={isKeyPressVisible}
+          heldCodes={heldCodes}
+          onKeyPointerSelect={onKeyPointerSelect}
+          onKeyHoverChange={onKeyHoverChange}
+        />
       </ShadowCasters>
 
       {/*
@@ -140,6 +208,7 @@ export const KeyboardScene = ({
         maxPolarAngle={Math.PI / 2.1}
       />
       <CameraRig pose={cameraPose} poseKey={cameraPoseKey} controlsRef={controlsRef} />
+      {onReady && <SceneReadySignal onReady={onReady} />}
     </Canvas>
   );
 };

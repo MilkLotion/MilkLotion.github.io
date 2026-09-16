@@ -1,15 +1,13 @@
 import { FOCUS_SWITCH_POSITION, tiltedToWorld } from './keyboardFrame';
 
 /**
- * 스크롤 분해 단계
+ * 분해 단계 — 역광 페이지 화면 흐름이 단계를 정함 (프로젝트 페이지는 0 고정)
  * - 0: 조립 상태
  * - 1: 키캡 · 상판 · 기보강(보강판 + 기판 + 스위치) · 하판(무게추 포함)
  * - 2: 키캡 · 상판 · 스위치 · 보강판 · 기판 · 하판 · 무게추
  * - 3: 스위치 확대 — 상부 하우징 · 스템 · 스프링 · 하부 하우징
  */
 export type ExplodeStage = 0 | 1 | 2 | 3;
-
-export const EXPLODE_STAGES: readonly ExplodeStage[] = [0, 1, 2, 3];
 
 export type LayerId = 'keycaps' | 'topCase' | 'switches' | 'plate' | 'pcb' | 'bottomCase' | 'weight';
 

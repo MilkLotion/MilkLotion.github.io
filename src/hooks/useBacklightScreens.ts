@@ -22,9 +22,12 @@ const SWIPE_THRESHOLD_PX = 40;
 
 const clampScreen = (value: number) => Math.min(SCREEN_COUNT - 1, Math.max(0, value));
 
-/** 역광 페이지 화면 흐름 — 아래로 스크롤·↓ 키 = 다음 화면, 위로 스크롤·↑ 키 = 이전 화면 */
-export const useBacklightScreens = () => {
-  const [screen, setScreen] = useState(0);
+/**
+ * 역광 페이지 화면 흐름 — 아래로 스크롤·↓ 키 = 다음 화면, 위로 스크롤·↑ 키 = 이전 화면
+ * - startsAtLastScreen: 프로젝트 페이지에서 돌아왔을 때 마지막 화면부터 (마운트 시점에만 읽음)
+ */
+export const useBacklightScreens = (startsAtLastScreen: boolean) => {
+  const [screen, setScreen] = useState(() => (startsAtLastScreen ? SCREEN_COUNT - 1 : 0));
 
   // 휠·터치·방향키 입력 구독 — 외부 이벤트 소스라 Effect 로 연결
   useEffect(() => {

@@ -45,19 +45,37 @@ interface KeyboardProps {
   stage: ExplodeStage;
   /** 자동 입력이 누르고 있는 키 — 사용자 입력과 합쳐 표시 */
   autoPressedCode: string | null;
+  /** 키 눌림 표시 — 끄면 자동 입력·사용자 입력 모두 키가 내려가지 않음 */
+  isKeyPressVisible: boolean;
+  /** 계속 눌린 채 둘 키 — 프로젝트 목록에서 고른 키 */
+  heldCodes: ReadonlySet<string>;
+  /** 키캡을 마우스로 누른 순간 — 참조가 유지돼야 키캡 memo 가 깨지지 않음 */
+  onKeyPointerSelect?: (code: string) => void;
+  /** 키캡 위에 마우스가 올라가면 code, 벗어나면 null — 참조 유지 필요 */
+  onKeyHoverChange?: (code: string | null) => void;
 }
 
-export const Keyboard = ({ stage, autoPressedCode }: KeyboardProps) => {
+export const Keyboard = ({
+  stage,
+  autoPressedCode,
+  isKeyPressVisible,
+  heldCodes,
+  onKeyPointerSelect,
+  onKeyHoverChange,
+}: KeyboardProps) => {
   const [pressedCodes, setPressedCodes] = useState<PressedCodes>(NO_PRESSED_CODES);
 
   const press = useCallback((code: string) => setPressedCodes(withCode(code)), []);
   const release = useCallback((code: string) => setPressedCodes(withoutCode(code)), []);
 
-  // 표시용 집합 — 사용자 입력 상태는 건드리지 않고 자동 입력 키만 얹음
-  const activeCodes = useMemo(
-    () => (autoPressedCode === null ? pressedCodes : withCode(autoPressedCode)(pressedCodes)),
-    [pressedCodes, autoPressedCode],
-  );
+  // 표시용 집합 — 사용자 입력 상태는 건드리지 않고 자동 입력 키·고정 키만 얹음
+  // 표시를 끈 동안에도 입력 상태는 계속 따라감 — 다시 켰을 때 그사이 뗀 키가 눌린 채 남지 않게
+  const activeCodes = useMemo(() => {
+    if (!isKeyPressVisible) return NO_PRESSED_CODES;
+
+    const withHeld = heldCodes.size === 0 ? pressedCodes : new Set([...pressedCodes, ...heldCodes]);
+    return autoPressedCode === null ? withHeld : withCode(autoPressedCode)(withHeld);
+  }, [pressedCodes, autoPressedCode, isKeyPressVisible, heldCodes]);
 
   // 물리 키보드 입력 구독 — 외부 이벤트 소스라 Effect 로 연결
   useEffect(() => {
@@ -135,8 +153,11 @@ export const Keyboard = ({ stage, autoPressedCode }: KeyboardProps) => {
               position={key.position}
               travel={KEY_TRAVEL}
               isPressed={activeCodes.has(key.code)}
+              isHighlighted={heldCodes.has(key.code)}
               onPress={press}
               onRelease={release}
+              onPointerSelect={onKeyPointerSelect}
+              onHoverChange={onKeyHoverChange}
             />
           ))}
         </ExplodeLayer>
