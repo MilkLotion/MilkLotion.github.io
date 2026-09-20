@@ -34,13 +34,13 @@ const SCREEN_COPY = [
   },
   {
     screen: 3,
-    title: '같은 코드 작성을\n지양합니다.',
-    description: '반복되는 기능은 공통 컴포넌트로 만들고, 이를\u00A0모아 사내 디자인시스템을 개발했습니다.',
+    title: '공통 UI를 만들어\n여러 제품에 씁니다.',
+    description: '폐쇄망 설치와 배포 검증까지 맡아 사내 디자인시스템을 개발했습니다.',
     hasProjectLinks: false,
   },
   {
     screen: 4,
-    title: '작업한 프로젝트를\n소개합니다.',
+    title: '작업 기록',
     description: null,
     hasProjectLinks: true,
   },

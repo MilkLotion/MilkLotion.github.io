@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 
 import { goBackTo, type PageId, useHashRoute } from './hooks/useHashRoute';
-import { BacklightPage } from './pages/BacklightPage';
-import { ProjectsPage } from './pages/ProjectsPage';
+import { PortfolioPage } from './portfolio/PortfolioPage';
+
+const BacklightPage = lazy(() => import('./pages/BacklightPage').then((module) => ({ default: module.BacklightPage })));
 
 interface PageHistory {
   current: PageId;
@@ -11,10 +12,7 @@ interface PageHistory {
 }
 
 /**
- * 페이지 전환 — 주소 해시 기준 (useHashRoute)
- * - 소개: 역광 페이지. 마지막 화면의 [프로젝트 보기]가 프로젝트 페이지로 이동
- * - 프로젝트: 스튜디오 키보드가 목록 — 상세는 같은 페이지 위에 겹쳐 3D 장면을 다시 불러오지 않음
- * - 소개 ↔ 프로젝트는 페이지가 통째로 바뀌어 3D 캔버스도 새로 만들어짐
+ * 키보드 홈과 읽기 화면 분리 — 상세 직접 진입 시 3D 코드를 불러오지 않음
  */
 export const App = () => {
   const route = useHashRoute();
@@ -31,22 +29,25 @@ export const App = () => {
     setTypedScreens((current) => (current.has(screen) ? current : new Set(current).add(screen)));
   };
 
-  const isProjectsPage = route.page === 'projects';
+  const isPortfolioPage = route.page !== 'intro';
 
   return (
-    <main className="app" data-mood={isProjectsPage ? 'studio' : 'backlight'}>
-      <h1 className="sr-only">노현수 포트폴리오</h1>
-      {isProjectsPage ? (
-        <ProjectsPage
-          detailSlug={route.projectSlug}
-          onLeave={() => goBackTo('', pageHistory.previous === 'intro')}
+    <main className="app" data-mood={isPortfolioPage ? 'portfolio' : 'backlight'}>
+      {isPortfolioPage ? (
+        <PortfolioPage
+          route={route}
+          onHome={() => goBackTo('', pageHistory.previous === 'intro')}
         />
       ) : (
+        <Suspense fallback={<div className="intro-loading" role="status">키보드를 불러오는 중</div>}>
+        <h1 className="sr-only">노현수 포트폴리오</h1>
+        <a className="intro-work-link" href="#projects">작업 바로 보기 ↗</a>
         <BacklightPage
-          startsAtLastScreen={pageHistory.previous === 'projects'}
+          startsAtLastScreen={pageHistory.previous !== null && pageHistory.previous !== 'intro'}
           typedScreens={typedScreens}
           onTypingStart={handleTypingStart}
         />
+        </Suspense>
       )}
     </main>
   );

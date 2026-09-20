@@ -5,7 +5,7 @@ import { getProjectBySlug } from '../content/projects';
 /** 프로젝트 페이지 주소 — 해시라 GitHub Pages 에서 새로고침·직접 진입해도 404 없이 열림 */
 export const PROJECTS_HASH = '#projects';
 
-export type PageId = 'intro' | 'projects';
+export type PageId = 'intro' | 'projects' | 'about' | 'lab';
 
 export interface HashRoute {
   page: PageId;
@@ -25,9 +25,16 @@ const getHash = () => window.location.hash;
 
 const parseHash = (hash: string): HashRoute => {
   if (hash === PROJECTS_HASH) return { page: 'projects', projectSlug: null };
+  if (hash === '#about') return { page: 'about', projectSlug: null };
+  if (hash === '#lab') return { page: 'lab', projectSlug: null };
 
   if (hash.startsWith(`${PROJECTS_HASH}/`)) {
-    const slug = decodeURIComponent(hash.slice(PROJECTS_HASH.length + 1));
+    let slug: string;
+    try {
+      slug = decodeURIComponent(hash.slice(PROJECTS_HASH.length + 1));
+    } catch {
+      return { page: 'projects', projectSlug: null };
+    }
     return { page: 'projects', projectSlug: getProjectBySlug(slug) ? slug : null };
   }
 
@@ -36,7 +43,7 @@ const parseHash = (hash: string): HashRoute => {
 
 /**
  * 주소 해시로 정하는 현재 화면
- * - 해시 없음 = 소개 페이지(역광) · `#projects` = 프로젝트 목록(스튜디오) · `#projects/{slug}` = 프로젝트 상세
+ * - 해시 없음 = 키보드 홈 · `#projects` = 작업 · `#projects/{slug}` = 상세 · `#about` = 소개 · `#lab` = 실험
  * - 해시 이동은 브라우저 기록에 남아 뒤로 가기로 이전 화면 복귀
  */
 export const useHashRoute = () => {

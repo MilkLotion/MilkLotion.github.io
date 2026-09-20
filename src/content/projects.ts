@@ -75,9 +75,9 @@ export const PROJECTS: readonly Project[] = [
     title: 'AICC 상담 데스크 (SOONi)',
     org: '퀀텀에이아이',
     period: '2026.05 ~ 현재',
-    status: '진행 중',
+    status: '4앱 사내 dev 운영',
     role: '프론트엔드 단독 — 모노레포 경계 설계 · 4앱 구축 · 실시간 음성 · 배포 구성',
-    summary: '권한과 배포 경로가 뒤섞인 단일 앱을 4앱 7패키지로 나누고, 상담사가 동시에 여는 창 사이의 세션 조율까지 설계했습니다.',
+    summary: '관리자·상담사·데모·채팅 위젯을 분리하고, 여러 창에서 함께 쓰는 세션을 조율했습니다.',
     highlights: ['커밋 1,443 / 1,453 (99.3%)', '4앱 × 7패키지 · 라우트 127'],
     stack: ['React 19', 'TypeScript', 'Turborepo', 'TanStack Router', 'Zustand', 'WebSocket'],
     context: [
@@ -128,12 +128,12 @@ export const PROJECTS: readonly Project[] = [
     period: '2025.12 ~ 현재',
     status: '진행 중',
     role: '단독 설계 · 개발 · CLI · 배포',
-    summary: '소비처에 npm·Tailwind 설정·상태관리를 강요하지 않는 컴포넌트 라이브러리. 빌드가 통과해도 소비처에서 깨지는 회귀를 잡는 데 가장 많은 시간을 썼습니다.',
+    summary: '폐쇄망에서 설치할 공통 UI를 개발했습니다. 개발 서버에서 보이지 않던 경로·스타일 누락을 배포 과정에서 검사하도록 보강했습니다.',
     highlights: ['커밋 684 / 713 (95.9%)', '컴포넌트 98종 · 소비처 3곳'],
     stack: ['React 19', 'TypeScript', 'Radix UI', 'Tailwind v4', 'CVA', 'Node CLI'],
     context: [
       '소비처가 폐쇄망입니다. 사내 레지스트리 밖의 npm 조회가 막혀 있고, 소비처마다 Tailwind 설정과 패키지명 규약이 다릅니다. 라이브러리가 통제할 수 없는 것들이라, 설계를 통제권 안쪽으로만 잡았습니다.',
-      '혼자 쓰려고 만들던 것이 새 프로젝트의 UI 라이브러리를 정할 시점에 쓸 만한 규모로 올라와 있어 표준으로 지정됐습니다. 소비처 3곳 중 둘은 제가 개발하는 프로젝트입니다.',
+      '개인적으로 개발하던 라이브러리를 신규 프로젝트의 공통 UI로 사용했습니다. 소비처 3곳 모두 제가 개발에 참여한 프로젝트입니다.',
     ],
     decisions: [
       {
@@ -146,7 +146,7 @@ export const PROJECTS: readonly Project[] = [
       },
       {
         title: '통과하는 빌드 뒤에 남는 회귀를 검증 스크립트로',
-        body: '서브패스 9개가 죽은 채 나간 릴리스, 포커스 표식 누락으로 테두리가 두 줄이 된 릴리스 — 둘 다 빌드·린트·타입이 전부 통과했습니다. 패키징 명령에 검증 스크립트 4종을 넣었고, 4종 모두 사고가 먼저 난 뒤에 만들었습니다.',
+        body: '서브패스 9개가 누락되거나 포커스 표식이 빠진 릴리스도 빌드·린트·타입 검사는 통과했습니다. 패키징 명령에 검증 스크립트 4종을 연결했습니다. 3종은 회귀 대응, 1종은 폼 상태 색상을 통일한 결과를 유지하는 검사입니다.',
       },
     ],
     facts: [
@@ -159,7 +159,7 @@ export const PROJECTS: readonly Project[] = [
       {
         src: '/projects/qds-no-coercion.svg',
         alt: '소비처에 강요하지 않은 네 가지(네트워크 환경·Tailwind 설정·상태관리·패키지명)와 대신 한 방법을 정리한 표',
-        caption: '설계 원칙 — 소비처에 아무것도 강요하지 않는다',
+        caption: '소비처의 설치 환경별 대응',
       },
       {
         src: '/projects/qds-data-grid.png',
@@ -179,7 +179,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2026.01 ~ 2026.06',
     status: '개발 종료 · 오픈 전',
     role: '11인 SI — 모노레포 골격 설계 · 상담사 웹(싱글뷰 · CTI) 주담당',
-    summary: '공공기관 AI 컨택센터 구축 SI. 전화 상태와 동작의 모든 조합을 조건문 대신 타입으로 열거해, 빠진 조합을 컴파일러가 찾게 했습니다.',
+    summary: '비동기 조회가 끝날 때 현재 통화 ID를 확인해 이전 응답을 폐기했습니다. 전화 상태와 동작의 조합도 타입으로 정의했습니다.',
     highlights: ['커밋 641 / 2,356 (11인 중 2위)', '전화 상태 8 × 동작 10 = 80조합'],
     stack: ['React 19', 'TypeScript', 'Turborepo', 'TanStack Router', 'Zustand', 'WebSocket'],
     context: [
@@ -225,7 +225,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2025.06 ~ 2025.12',
     status: '종료',
     role: '10인 SI — 중반 합류 후 프론트엔드 단독 · 2025.09부터 현장 파견',
-    summary: '폐쇄망 금융권에서 비정형 문서를 검색 가능한 자산으로 만드는 플랫폼. PDF 미리보기·검색을 라이브러리로 떼어내 후속 프로젝트에서 그대로 썼습니다.',
+    summary: '답변의 출처를 누르면 옆 문서 패널에서 해당 구절이 열리도록 연결했습니다. PDF 뷰어와 검색 기능은 패키지로 분리해 재사용했습니다.',
     highlights: ['커밋 285 / 1,562 (사내 저장소 기준)', 'PDF 라이브러리 → 후속 프로젝트로 이식'],
     stack: ['React', 'JavaScript', 'Ant Design', 'Zustand', 'TanStack Query', 'pdf.js'],
     context: [
@@ -249,7 +249,7 @@ export const PROJECTS: readonly Project[] = [
     facts: [
       { label: '기여', value: '커밋 285 / 1,562 (사내 저장소 기준 · 파견 기간 제외)' },
       { label: '재사용', value: 'PDF 라이브러리를 후속 프로젝트 · 디자인시스템으로 이식' },
-      { label: '보안 점검', value: '정적 분석 지적 5종 일괄 처방 후 재발 0건' },
+      { label: '현장 대응', value: '요구사항·결함 조치, 보안 점검 대응, 테스트·오픈 지원' },
     ],
     media: [],
     measuredNote: null,
@@ -264,7 +264,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2026.05 ~ 2026.08',
     status: '종료',
     role: '저장소 7개 중 6개 단독 — 정적 프론트 3 + 공용 백엔드 1 + 데모 3',
-    summary: '정적 소개 사이트 셋을 공용 백엔드 하나로 묶고, 고정 QR 하나로 기간별 행사를 돌렸습니다. 열려 있던 관리 콘솔 경로도 직접 찾아 닫았습니다.',
+    summary: '소개 사이트 세 곳의 문의 저장과 방문 분석을 공용 백엔드로 처리했습니다. 행사별 접수 기간은 고정 QR 뒤에서 서버가 판단하도록 구성했습니다.',
     highlights: ['커밋 145 / 183 · 실작업 19일', '세 번째 사이트 추가 = 백엔드 커밋 1개'],
     stack: ['React 19', 'TypeScript', 'Next.js', 'Prisma', 'PostgreSQL', 'nginx'],
     context: [
@@ -312,7 +312,7 @@ export const PROJECTS: readonly Project[] = [
     highlights: ['수상 2건', '민관협력 공모전 특별상 · 오픈소스 개발자대회 우수작'],
     stack: ['React', 'TypeScript', 'SSE', 'Zustand', 'Tailwind'],
     context: [
-      'LLM 응답을 토큰 단위로 받아야 하고, 텍스트·메뉴·표·완료 같은 의미 영역이 섞여서 도착합니다. 코딩을 모르는 사용자가 대상이라 응답이 중간에 멈추면 그대로 이탈합니다.',
+      'LLM 응답은 토큰 단위로 도착하며 텍스트, 메뉴, 표, 완료 이벤트가 섞여 있습니다. 불완전한 블록을 이어 받아 화면에 표시해야 했습니다.',
     ],
     decisions: [
       {
@@ -346,7 +346,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2024.07 ~ 2024.11',
     status: '종료',
     role: '프론트엔드 — 프론트와 백엔드가 처음으로 나뉜 환경',
-    summary: '프론트와 백엔드가 처음으로 분리된 프로젝트. 지금의 프론트엔드 전문화가 갈라진 지점입니다.',
+    summary: '통계 차트와 데이터 내보내기 화면을 개발하고, GitHub Actions와 Docker로 배포를 자동화했습니다.',
     highlights: ['통계 시각화 · CI/CD 구축'],
     stack: ['React', 'TypeScript', 'Chart.js', 'GitHub Actions', 'Docker'],
     context: ['그전까지는 풀스택으로 서버와 화면을 같이 다뤘는데, 이 프로젝트에서 처음으로 역할이 갈렸습니다. 형태가 비슷한 페이지가 여러 개 필요했습니다.'],
@@ -374,7 +374,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2022.12 ~ 2023.07',
     status: '종료',
     role: '풀스택 — React · TypeScript 프론트 + Spring Boot 백엔드',
-    summary: '노후 모니터링 시스템을 새로 짜며 TypeScript · Redux · JWT 를 처음 들였습니다. 이후 풀스택 시기의 기본 스택이 됐습니다.',
+    summary: '장비의 실시간 데이터를 차트와 도면에 표시했습니다. React 화면과 Spring Boot 인증·조회 API를 함께 개발했습니다.',
     highlights: ['TypeScript · Redux · JWT 첫 도입'],
     stack: ['React', 'TypeScript', 'Redux Toolkit', 'Spring Boot', 'PostgreSQL', 'OpenLayers'],
     context: ['기존 모니터링 시스템이 낡았고 관리 페이지가 없었습니다. 여러 페이지가 같은 데이터를 차트·표·요약으로 다르게 보여주는 구조라 상태 설계부터 손댔습니다.'],
@@ -430,7 +430,7 @@ export const PROJECTS: readonly Project[] = [
     period: '2022.08 ~ 2022.11',
     status: '종료',
     role: '풀스택 — Spring Boot 백엔드 위주 + React 프론트',
-    summary: 'React 를 처음 쓴 프로젝트. 기능이 서버 쪽에 몰려 있어 백엔드 설계가 주였습니다.',
+    summary: '일지 등록·조회·내보내기 API와 사용자 일지 화면을 개발했습니다. Spring Boot 백엔드를 주로 맡았고 React를 처음 도입했습니다.',
     highlights: ['React 첫 도입'],
     stack: ['React', 'Spring Boot', 'MySQL', 'Swagger'],
     context: ['임산부 공기질·건강관리 서비스입니다. 행동·식단 데이터를 xlsx · csv 로 내보내면서 첨부 이미지 목록까지 함께 담아야 했습니다.'],
@@ -453,11 +453,11 @@ export const PROJECTS: readonly Project[] = [
     org: '큐오티',
     period: '2021.08 ~ 2021.12',
     status: '종료',
-    role: 'OCR 하드웨어 프로토타입 개발',
-    summary: '첫 직장 5개월. 하드웨어에 붙는 소프트웨어를 먼저 겪고 웹으로 방향을 정한 출발점입니다.',
-    highlights: ['첫 직장 · 5개월'],
-    stack: [],
-    context: ['세부 담당 범위와 사용 기술 기록이 남아 있지 않아, 경력의 출발점으로만 둡니다.'],
+    role: '인턴 · OCR 단말기 프로토타입 개발',
+    summary: 'C와 Python을 사용해 OCR 단말기 프로토타입을 개발했습니다.',
+    highlights: ['인턴 · 5개월'],
+    stack: ['C', 'Python'],
+    context: ['2021년 8월부터 12월까지 인턴으로 참여했습니다.'],
     decisions: [],
     facts: [],
     media: [],
