@@ -1,0 +1,49 @@
+:root {
+  --home-bg: #0d0f12;
+  --home-text: #e8eaed;
+  --home-muted: #8b9098;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--home-bg);
+  color: var(--home-text);
+  font-family: system-ui, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+.home {
+  display: grid;
+  min-height: 100svh;
+  place-content: center;
+  gap: 24px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.home__name {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 700;
+}
+
+.home__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+}
+
+.home__links a {
+  color: var(--home-muted);
+  text-decoration: none;
+}
+
+.home__links a:hover,
+.home__links a:focus-visible {
+  color: var(--home-text);
+}

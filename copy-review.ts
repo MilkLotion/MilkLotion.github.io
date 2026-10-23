@@ -22,8 +22,8 @@ export const portfolioCopyReview = (): Plugin => ({
   enforce: 'pre',
   transform(source, id) {
     const path = id.replaceAll('\\', '/').split('?')[0];
-    const isCopySurface = /\/src\/(?:portfolio\/.*|content\/projects|pages\/BacklightPage)\.tsx?$/.test(path);
+    const isCopySurface = /\/src\/whoami\/(?:portfolio\/.*|content\/projects|pages\/BacklightPage)\.tsx?$/.test(path);
     if (!isCopySurface || path.endsWith('/demo-scenarios.ts') || path.endsWith('/CaseDemo.tsx')) return;
-    for (const reason of reviewPortfolioCopy(source)) this.warn(`[문구 검토] ${path.split('/src/')[1]}: ${reason}`);
+    for (const reason of reviewPortfolioCopy(source)) this.warn(`[문구 검토] ${path.split('/src/whoami/')[1]}: ${reason}`);
   },
 });

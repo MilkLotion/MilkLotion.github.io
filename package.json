@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:pokebuddy": "node scripts/sync-pokebuddy.cjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
