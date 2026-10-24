@@ -1,0 +1,159 @@
+/*
+ * 사이트 공통 디자인 토큰 (shadcn 구조)
+ * - 진입점에서 import 한 페이지에만 적용 — 지금은 /pokebuddy/ 만
+ * - 다크 모드: OS 설정 따름, 토글 없음 (2026-10-24 사용자 결정)
+ * - 기본값 = pokebuddy 색. home·whoami 적용 때 `[data-brand]` 덮어쓰기 추가
+ * - Pretendard 는 각 진입 HTML 의 CDN <link> 로 불러옴
+ */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+/* 게임 조각(수치·배지)용 도트 글꼴 — OFL, pokebuddy 앱 assets/fonts 사본 */
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/galmuri/Galmuri11.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/galmuri/Galmuri11-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: #f7f7f4;
+  --foreground: #1a3330;
+  --card: #ffffff;
+  --card-foreground: #1a3330;
+  --popover: #ffffff;
+  --popover-foreground: #1a3330;
+  --primary: #0f766e;
+  --primary-hover: #0a5f56;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0ec;
+  --secondary-foreground: #1a3330;
+  --muted: #eef0ec;
+  --muted-foreground: #4a6663;
+  --accent: #e8ebe6;
+  --accent-foreground: #1a3330;
+  --destructive: #c2410c;
+  --border: #dde1db;
+  --input: #dde1db;
+  --ring: #0f766e;
+  --brand-deep: #13243a;
+  --brand-navy: #1f3550;
+  --brand-teal: #12655f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1a1c;
+    --foreground: #e3ece9;
+    --card: #16252a;
+    --card-foreground: #e3ece9;
+    --popover: #16252a;
+    --popover-foreground: #e3ece9;
+    --primary: #3cb8a9;
+    --primary-hover: #5ccabd;
+    --primary-foreground: #04201c;
+    --secondary: #1c2d31;
+    --secondary-foreground: #e3ece9;
+    --muted: #1c2d31;
+    --muted-foreground: #9db3af;
+    --accent: #22363b;
+    --accent-foreground: #e3ece9;
+    --destructive: #f97316;
+    --border: #2a3c40;
+    --input: #2a3c40;
+    --ring: #3cb8a9;
+    --brand-deep: #0b1624;
+    --brand-navy: #142538;
+    --brand-teal: #0d4b47;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Pretendard Variable', Pretendard, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-pixel: 'Galmuri11', 'Pretendard Variable', monospace;
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-teal: var(--brand-teal);
+}
+
+/* 포켓몬 타입 색 — pokebuddy 앱 type-badge.css 와 같은 값 */
+@theme {
+  --color-type-normal: #9fa19f;
+  --color-type-fire: #e52829;
+  --color-type-water: #2675db;
+  --color-type-grass: #358722;
+  --color-type-electric: #fac000;
+  --color-type-ice: #3dcef3;
+  --color-type-fighting: #ff8000;
+  --color-type-poison: #9141cb;
+  --color-type-ground: #915121;
+  --color-type-flying: #81b9ef;
+  --color-type-psychic: #d53a6c;
+  --color-type-bug: #91a119;
+  --color-type-rock: #afa981;
+  --color-type-ghost: #704170;
+  --color-type-dragon: #5060e1;
+  --color-type-dark: #624d4e;
+  --color-type-steel: #60a1b8;
+  --color-type-fairy: #ef70ef;
+
+  /* pokebuddy 기능 분류 dot */
+  --color-dot-care: #0f766e;
+  --color-dot-egg: #dc9540;
+  --color-dot-mega: #8b5cf6;
+  --color-dot-battle: #e25050;
+  --color-dot-friends: #6a93d0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    word-break: keep-all;
+  }
+}
+
+@utility pixelated {
+  image-rendering: pixelated;
+}

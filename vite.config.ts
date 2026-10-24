@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 
@@ -31,7 +32,8 @@ const publicPageDirs = (): Plugin => ({
 export default defineConfig({
   base: '/',
   appType: 'mpa',
-  plugins: [publicPageDirs(), portfolioCopyReview(), react()],
+  // tailwindcss: 공통 디자인 시스템(src/shared/styles/globals.css)을 import 한 페이지에만 적용
+  plugins: [publicPageDirs(), portfolioCopyReview(), tailwindcss(), react()],
   build: {
     rolldownOptions: {
       // 경로는 프로젝트 루트 기준 — npm 스크립트는 루트에서 실행
