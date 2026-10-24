@@ -7,6 +7,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "드래곤조련사",
   "kind": "type-concept",
+  "theme": "dragon",
   "party": [
    {
     "id": "rayquaza-mega",
@@ -69,6 +70,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "수영팬티소년",
   "kind": "weather",
+  "theme": "rain",
   "party": [
    {
     "id": "miraidon",
@@ -130,6 +132,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "엘리트트레이너",
   "kind": "weather",
+  "theme": "sun",
   "party": [
    {
     "id": "victini",
@@ -192,6 +195,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "과학자",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "zacian-crowned",
@@ -254,6 +258,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "베테랑트레이너",
   "kind": "legend",
+  "theme": null,
   "party": [
    {
     "id": "mewtwo-mega-x",
@@ -316,6 +321,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "배틀걸",
   "kind": "offense",
+  "theme": null,
   "party": [
    {
     "id": "zacian",
@@ -377,6 +383,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "초능력자",
   "kind": "offense",
+  "theme": null,
   "party": [
    {
     "id": "hoopa",
@@ -438,6 +445,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "신사",
   "kind": "bulk",
+  "theme": null,
   "party": [
    {
     "id": "ting-lu",
@@ -498,6 +506,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "포켓몬레인저",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "shaymin",
@@ -557,6 +566,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "hard",
   "name": "유적마니아",
   "kind": "weather",
+  "theme": "sand",
   "party": [
    {
     "id": "forretress",
@@ -619,6 +629,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "낚시꾼",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "claydol",
@@ -678,6 +689,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "캠핑보이",
   "kind": "type-concept",
+  "theme": "fire",
   "party": [
    {
     "id": "ninetales",
@@ -737,6 +749,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "등산가",
   "kind": "weather",
+  "theme": "sand",
   "party": [
    {
     "id": "archaludon",
@@ -797,6 +810,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "피크닉걸",
   "kind": "weather",
+  "theme": "sun",
   "party": [
    {
     "id": "tauros-paldea-blaze-breed",
@@ -857,6 +871,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "아로마아가씨",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "toedscruel",
@@ -918,6 +933,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "아가씨",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "gholdengo",
@@ -978,6 +994,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "폭주족",
   "kind": "offense",
+  "theme": null,
   "party": [
    {
     "id": "pinsir",
@@ -1039,6 +1056,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "포켓몬브리더",
   "kind": "bulk",
+  "theme": null,
   "party": [
    {
     "id": "slowking-galar",
@@ -1100,6 +1118,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "태권왕",
   "kind": "type-concept",
+  "theme": "fighting",
   "party": [
    {
     "id": "conkeldurr",
@@ -1160,6 +1179,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "normal",
   "name": "오컬트마니아",
   "kind": "type-concept",
+  "theme": "psychic",
   "party": [
    {
     "id": "orbeetle",
@@ -1221,6 +1241,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "반바지꼬마",
   "kind": "type-concept",
+  "theme": "normal",
   "party": [
    {
     "id": "pyroar",
@@ -1279,6 +1300,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "곤충채집소년",
   "kind": "type-concept",
+  "theme": "bug",
   "party": [
    {
     "id": "vikavolt",
@@ -1341,6 +1363,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "짧은치마",
   "kind": "type-concept",
+  "theme": "grass",
   "party": [
    {
     "id": "sawsbuck-spring",
@@ -1400,6 +1423,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "도련님",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "blaziken",
@@ -1460,6 +1484,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "쌍둥이",
   "kind": "weather",
+  "theme": "sun",
   "party": [
    {
     "id": "ninetales",
@@ -1518,6 +1543,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "학원아이",
   "kind": "offense",
+  "theme": null,
   "party": [
    {
     "id": "skarmory",
@@ -1579,6 +1605,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "유치원생",
   "kind": "bulk",
+  "theme": null,
   "party": [
    {
     "id": "arboliva",
@@ -1639,6 +1666,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "기타리스트",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "perrserker",
@@ -1698,6 +1726,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "백팩커",
   "kind": "type-cover",
+  "theme": null,
   "party": [
    {
     "id": "sneasler",
@@ -1759,6 +1788,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "easy",
   "name": "작업원",
   "kind": "weather",
+  "theme": "sand",
   "party": [
    {
     "id": "magcargo",
@@ -1819,6 +1849,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 레드",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "pikachu",
@@ -1878,6 +1909,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 그린",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "gyarados",
@@ -1938,6 +1970,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 목호",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "aerodactyl",
@@ -2000,6 +2033,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 성호",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "armaldo",
@@ -2062,6 +2096,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 윤진",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "milotic",
@@ -2122,6 +2157,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 난천",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "garchomp-mega",
@@ -2183,6 +2219,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 노간주",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "accelgor",
@@ -2241,6 +2278,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 아이리스",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "archeops",
@@ -2301,6 +2339,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 카르네",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "gardevoir-mega",
@@ -2362,6 +2401,7 @@ export const TRAINERS: TrainerInfo[] = [
   "level": "champion",
   "name": "챔피언 단델",
   "kind": "champion",
+  "theme": null,
   "party": [
    {
     "id": "charizard",

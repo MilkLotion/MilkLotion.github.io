@@ -30,6 +30,8 @@ const names = read('names.json');
 const species = read('species.defaults.json');
 const dex = read('dex.json');
 const mega = read('mega.json').forms;
+const megaBattle = read('mega-battle.json');
+const speciesAbilities = read('species-abilities.json');
 const samples = read('battle-samples.json').samples;
 const patchNotes = read('patch-notes.json').notes;
 
@@ -115,13 +117,40 @@ function pokemonOf(slot) {
   return { id: slot.species, ko: names[slot.species].ko, pokemonId: dex[slot.species], types: sp.types };
 }
 
-const trainers = samples.map((sample) => ({
-  id: sample.id,
-  level: sample.level,
-  name: sample.name,
-  kind: sample.kind,
-  party: sample.slots.map(pokemonOf),
-}));
+// 날씨를 부르는 특성 — pokebuddy src/battle/engine.ts WEATHER_ABILITY 와 같은 짝 (날씨 없음 특성은 뺌)
+const WEATHER_ABILITY = {
+  drought: 'sun',
+  'orichalcum-pulse': 'sun',
+  'desolate-land': 'sun',
+  drizzle: 'rain',
+  'primordial-sea': 'rain',
+  'sand-stream': 'sand',
+  'sand-spit': 'sand',
+  'snow-warning': 'snow',
+};
+
+const abilityOf = (slot) => (slot.form && megaBattle[slot.form]?.ability) || speciesAbilities[slot.species];
+
+// 파티 주제 — 한 타입 파티는 가장 많은 타입, 날씨 파티는 가장 많은 날씨 특성의 날씨
+function themeOf(sample, party) {
+  const top = (values) => {
+    const counts = new Map();
+    for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+    return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+  };
+  if (sample.kind === 'type-concept') return top(party.flatMap((pokemon) => pokemon.types));
+  if (sample.kind === 'weather') {
+    const weather = top(sample.slots.map((slot) => WEATHER_ABILITY[abilityOf(slot)]).filter(Boolean));
+    if (!weather) throw new Error(`날씨 특성 없는 날씨 파티: ${sample.id}`);
+    return weather;
+  }
+  return null;
+}
+
+const trainers = samples.map((sample) => {
+  const party = sample.slots.map(pokemonOf);
+  return { id: sample.id, level: sample.level, name: sample.name, kind: sample.kind, theme: themeOf(sample, party), party };
+});
 
 // 패치노트 그림 — manifest 가 있을 때만. 없으면 글만
 let patchImages = [];

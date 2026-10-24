@@ -22,8 +22,8 @@ export const TYPE_KO: Record<PokemonType, string> = {
   fairy: '페어리',
 };
 
-/** 타입 dot 색 — globals.css 타입 18색 (클래스 이름을 통째로 적어야 Tailwind 가 찾음) */
-export const TYPE_DOT: Record<PokemonType, string> = {
+/** 타입 아이콘 바탕색 — globals.css 타입 18색 (클래스 이름을 통째로 적어야 Tailwind 가 찾음) */
+export const TYPE_BG: Record<PokemonType, string> = {
   normal: 'bg-type-normal',
   fire: 'bg-type-fire',
   water: 'bg-type-water',

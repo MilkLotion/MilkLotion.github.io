@@ -4,8 +4,9 @@ import { Fragment, useMemo, useState } from 'react';
 import { cn } from '../../shared/lib/cn';
 import { MOVES } from '../data/moves.generated';
 import type { MoveClass, MoveInfo, PokemonType } from '../data/dataTypes';
-import { TYPE_DOT, TYPE_KO, TYPE_ORDER } from '../site/pokemonTypes';
+import { TYPE_KO, TYPE_ORDER } from '../site/pokemonTypes';
 import { TypeBadge } from '../site/TypeBadge';
+import { TypeIcon } from '../site/TypeIcon';
 
 const CLASS_KO: Record<MoveClass, string> = { physical: '물리', special: '특수', status: '변화' };
 
@@ -108,11 +109,11 @@ export const MovesTab = () => {
               aria-pressed={type === key}
               onClick={() => setType(type === key ? null : key)}
               className={cn(
-                'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-[12px] text-muted-foreground hover:bg-accent',
+                'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full pr-2.5 pl-1.5 text-[12px] text-muted-foreground hover:bg-accent',
                 type === key && 'bg-accent font-semibold text-foreground',
               )}
             >
-              <span aria-hidden="true" className={cn('size-2 rounded-full', TYPE_DOT[key])} />
+              <TypeIcon type={key} decorative />
               {TYPE_KO[key]}
             </button>
           ))}

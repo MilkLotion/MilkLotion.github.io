@@ -2,9 +2,10 @@ import { useState } from 'react';
 
 import { cn } from '../../shared/lib/cn';
 import { TRAINERS } from '../data/trainers.generated';
-import type { PartyPokemon, TrainerInfo, TrainerLevel } from '../data/dataTypes';
+import type { PartyPokemon, PokemonType, TrainerInfo, TrainerLevel } from '../data/dataTypes';
 import { spriteUrl } from '../site/links';
-import { TYPE_DOT, TYPE_KO } from '../site/pokemonTypes';
+import { TYPE_KO } from '../site/pokemonTypes';
+import { TypeIcon } from '../site/TypeIcon';
 
 /** 난이도 — 앱 표기 상·중·하 + 챔피언 (data/battle-samples.json level) */
 const LEVELS: { key: TrainerLevel; label: string }[] = [
@@ -16,15 +17,55 @@ const LEVELS: { key: TrainerLevel; label: string }[] = [
 
 const LEVEL_LABEL = Object.fromEntries(LEVELS.map((level) => [level.key, level.label])) as Record<TrainerLevel, string>;
 
-/** 파티 성격 — battle-samples.json note 첫 마디 */
+/** 파티 유형 — battle-samples.json kind. 한 타입·날씨 파티는 subtitleOf 에서 주제를 붙임 */
 const KIND_KO: Record<string, string> = {
-  'type-concept': '한 타입 중심',
-  weather: '날씨 특성 묶음',
-  'type-cover': '약점을 서로 막는 묶음',
-  legend: '전설급 위주',
-  offense: '공격·스피드 쏠림',
-  bulk: '내구 쏠림',
-  champion: '원작 챔피언 파티',
+  'type-cover': '밸런스형 파티',
+  offense: '공격형 파티',
+  bulk: '버티기형 파티',
+  legend: '전설 포켓몬 파티',
+  champion: '챔피언 파티',
+};
+
+/** 날씨 이름 — 원작 표기 */
+const WEATHER_KO: Record<string, string> = { sun: '쾌청', rain: '비', sand: '모래바람', snow: '설경' };
+
+/**
+ * 챔피언 지방 — 원작 기준, 세대 순 (2026-10-25 사용자 "성도지방 챔피언 이런거로")
+ * - 이 표 순서로 챔피언을 늘어놓음. 표에 없는 챔피언은 끝에 "챔피언 파티"로
+ */
+const CHAMPION_REGIONS: [name: string, region: string][] = [
+  ['챔피언 그린', '관동'],
+  ['챔피언 레드', '관동'],
+  ['챔피언 목호', '성도'],
+  ['챔피언 성호', '호연'],
+  ['챔피언 윤진', '호연'],
+  ['챔피언 난천', '신오'],
+  ['챔피언 노간주', '하나'],
+  ['챔피언 아이리스', '하나'],
+  ['챔피언 카르네', '칼로스'],
+  ['챔피언 단델', '가라르'],
+];
+
+const regionOf = (trainer: TrainerInfo) => CHAMPION_REGIONS.find(([name]) => name === trainer.name)?.[1];
+
+const championOrder = (trainer: TrainerInfo) => {
+  const index = CHAMPION_REGIONS.findIndex(([name]) => name === trainer.name);
+  return index === -1 ? CHAMPION_REGIONS.length : index;
+};
+
+/** 데이터 순서 그대로 두고 챔피언만 세대 순으로 — 챔피언은 모두 다른 트레이너 뒤 */
+const TRAINERS_ORDERED = [
+  ...TRAINERS.filter((trainer) => trainer.level !== 'champion'),
+  ...TRAINERS.filter((trainer) => trainer.level === 'champion').sort((a, b) => championOrder(a) - championOrder(b)),
+];
+
+/** 카드 아래 한 줄 — 챔피언은 지방, 나머지는 파티 유형 */
+const subtitleOf = (trainer: TrainerInfo) => {
+  const region = trainer.level === 'champion' ? regionOf(trainer) : undefined;
+  if (region) return `${region}지방 챔피언`;
+  if (trainer.kind === 'type-concept' && trainer.theme) return `${TYPE_KO[trainer.theme as PokemonType]} 타입 파티`;
+  if (trainer.kind === 'weather' && trainer.theme) return `${WEATHER_KO[trainer.theme]} 파티`;
+  return KIND_KO[trainer.kind] ?? '';
 };
 
 /**
@@ -33,7 +74,7 @@ const KIND_KO: Record<string, string> = {
  */
 export const TrainersTab = () => {
   const [level, setLevel] = useState<TrainerLevel | null>(null);
-  const list = TRAINERS.filter((trainer) => !level || trainer.level === level);
+  const list = TRAINERS_ORDERED.filter((trainer) => !level || trainer.level === level);
 
   return (
     <div className="flex flex-col gap-5">
@@ -74,7 +115,7 @@ const TrainerCard = ({ trainer }: { trainer: TrainerInfo }) => {
       <header className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h3 className="text-[17px] font-extrabold">{trainer.name}</h3>
-          <p className="text-[13px] text-muted-foreground">{KIND_KO[trainer.kind] ?? trainer.kind}</p>
+          <p className="text-[13px] text-muted-foreground">{subtitleOf(trainer)}</p>
         </div>
         <span
           className={cn(
@@ -102,9 +143,9 @@ const PartyRow = ({ label, members }: { label: string; members: (PartyPokemon | 
           <li key={`${member.id}-${index}`} className="flex flex-col items-center gap-1 rounded-xl bg-accent/70 px-1 pt-1 pb-2 text-center">
             <img src={spriteUrl(member.pokemonId)} alt="" width={96} height={96} loading="lazy" className="pixelated size-16" />
             <span className="text-[12px] leading-tight font-semibold">{member.ko}</span>
-            <span className="flex gap-1" aria-label={member.types.map((type) => TYPE_KO[type]).join('·')}>
+            <span className="flex gap-1">
               {member.types.map((type) => (
-                <span key={type} aria-hidden="true" className={cn('size-2 rounded-full', TYPE_DOT[type])} />
+                <TypeIcon key={type} type={type} />
               ))}
             </span>
           </li>
