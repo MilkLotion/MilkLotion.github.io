@@ -7,6 +7,7 @@ import { Hero } from './Hero';
 import { InstallSection } from './InstallSection';
 import { PetStage } from './pet/PetStage';
 import { PetToggle } from './pet/PetToggle';
+import { ScrollTopButton } from './ScrollTopButton';
 import { usePetsShown } from './pet/usePetsShown';
 import { HERO_SPRITES } from './pmdSprites';
 import { SiteFooter } from '../site/SiteFooter';
@@ -28,7 +29,7 @@ const PET_CAST = {
 /**
  * `/pokebuddy/` 랜딩 — 와이어프레임 v1 (2026-10-24) 구성
  * - 포켓몬 무대는 화면 전체(fixed) — 스크롤해도 화면 위에 머물고, 화면 어디로든 끌어다 놓을 수 있음
- * - 오른쪽 아래 단추로 숨기기·보이기 (방문자 선택 기억)
+ * - 오른쪽 아래 단추로 숨기기·보이기 (방문자 선택 기억), 내려오면 그 위에 맨 위로 단추
  */
 export const LandingPage = () => {
   const release = useLatestRelease();
@@ -47,7 +48,11 @@ export const LandingPage = () => {
       </main>
       <SiteFooter />
       {pets.shown && <PetStage sprites={cast.sprites} starts={cast.starts} zoom={PET_ZOOM} anchorRef={capturesRef} />}
-      <PetToggle shown={pets.shown} onToggle={pets.toggle} />
+      {/* 오른쪽 아래 떠 있는 단추 — 맨 위로(내려왔을 때만) 위, 포켓몬 숨기기 아래 */}
+      <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-2">
+        <ScrollTopButton />
+        <PetToggle shown={pets.shown} onToggle={pets.toggle} />
+      </div>
     </>
   );
 };

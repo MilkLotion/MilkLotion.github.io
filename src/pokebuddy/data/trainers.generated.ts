@@ -1877,7 +1877,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-01",
   "level": "champion",
-  "name": "챔피언 그린",
+  "name": "챔피언 그린 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "관동",
@@ -1938,7 +1938,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-02",
   "level": "champion",
-  "name": "레드",
+  "name": "레드 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "관동",
@@ -1998,7 +1998,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-03",
   "level": "champion",
-  "name": "챔피언 목호",
+  "name": "챔피언 목호 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "성도",
@@ -2062,7 +2062,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-04",
   "level": "champion",
-  "name": "챔피언 성호",
+  "name": "챔피언 성호 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "호연",
@@ -2126,7 +2126,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-05",
   "level": "champion",
-  "name": "챔피언 윤진",
+  "name": "챔피언 윤진 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "호연",
@@ -2188,7 +2188,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-06",
   "level": "champion",
-  "name": "챔피언 난천",
+  "name": "챔피언 난천 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "신오",
@@ -2251,7 +2251,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-07",
   "level": "champion",
-  "name": "챔피언 노간주",
+  "name": "챔피언 노간주 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "하나",
@@ -2311,7 +2311,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-08",
   "level": "champion",
-  "name": "챔피언 아이리스",
+  "name": "챔피언 아이리스 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "하나",
@@ -2372,7 +2372,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-09",
   "level": "champion",
-  "name": "챔피언 카르네",
+  "name": "챔피언 카르네 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "칼로스",
@@ -2435,7 +2435,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-10",
   "level": "champion",
-  "name": "챔피언 쿠쿠이",
+  "name": "챔피언 쿠쿠이 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "알로라",
@@ -2497,7 +2497,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-11",
   "level": "champion",
-  "name": "챔피언 단델",
+  "name": "챔피언 단델 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "가라르",
@@ -2560,7 +2560,7 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-12",
   "level": "champion",
-  "name": "챔피언 테사",
+  "name": "챔피언 테사 (60Lv)",
   "kind": "champion",
   "theme": null,
   "region": "팔데아",

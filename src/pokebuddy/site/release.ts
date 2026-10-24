@@ -16,12 +16,12 @@ export interface ReleaseInfo {
 
 /**
  * 받기 전·실패 시 보여줄 값
- * - 마지막 확인: v0.22.1 (2026-10-22)
+ * - 마지막 확인: v0.22.2 (2026-10-25)
  * - 주소는 릴리스 페이지 — 파일 이름은 버전마다 바뀌어 직접 링크를 고정하지 않음
  */
 export const FALLBACK_RELEASE: ReleaseInfo = {
-  version: '0.22.1',
-  date: '2026-10-22',
+  version: '0.22.2',
+  date: '2026-10-25',
   downloads: { windows: RELEASES_URL, 'mac-arm64': RELEASES_URL, 'mac-x64': RELEASES_URL },
 };
 
@@ -49,7 +49,8 @@ export const fetchLatestRelease = async (signal: AbortSignal): Promise<ReleaseIn
 
   return {
     version: release.tag_name.replace(/^v/, ''),
-    date: release.published_at.slice(0, 10),
+    // 한국 날짜 — UTC 그대로 자르면 오전 9시 전 릴리스가 하루 앞 날짜로 나옴 (패치노트 날짜와 어긋남)
+    date: new Date(release.published_at).toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }),
     downloads: {
       windows: findAsset(release, 'windows'),
       'mac-arm64': findAsset(release, 'mac-arm64'),

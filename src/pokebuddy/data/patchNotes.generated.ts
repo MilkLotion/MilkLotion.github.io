@@ -3,6 +3,73 @@ import type { PatchNote } from './dataTypes';
 
 export const PATCH_NOTES: PatchNote[] = [
  {
+  "version": "0.22.2",
+  "date": "2026-10-25",
+  "lines": [
+   "사거리가 다시 기술로 정해져요. 물리 기술 포켓몬은 붙어서, 특수 기술 포켓몬은 멀리서 싸워요. 배틀 칸 구석의 방패·칼 아이콘은 없어졌어요",
+   "첫 공격을 한 포켓몬은 가까이 있는 상대에게 3배 빠르게 다가가요",
+   "자기과신·유대변화처럼 상대를 쓰러뜨리면 발동하는 특성은, 쓰러진 상대가 받은 피해의 30% 이상을 준 포켓몬도 받아요",
+   "랜덤 배틀 샘플 파티가 모두 출전 제한을 지키고, 엘리트트레이너·반바지꼬마 같은 트레이너 이름으로 나와요",
+   "관동부터 팔데아까지 지방 챔피언 12명이 원작 파티로 나와요. 챔피언은 60레벨이라 더 세요"
+  ],
+  "images": [
+   {
+    "version": "0.22.2",
+    "line": 0,
+    "src": "/pokebuddy/patch-notes/0.22.2/battle-slots-no-icons.png",
+    "alt": "모험 탭 배틀 칸 — 구석의 방패·칼 아이콘이 없어졌어요",
+    "width": 1020,
+    "height": 682,
+    "now": false
+   },
+   {
+    "version": "0.22.2",
+    "line": 3,
+    "src": "/pokebuddy/patch-notes/0.22.2/trainer-names.png",
+    "alt": "배틀 기록 — 샘플 파티가 엘리트트레이너·반바지꼬마 같은 트레이너 이름으로 나와요(예시 기록)",
+    "width": 640,
+    "height": 682,
+    "now": false
+   },
+   {
+    "version": "0.22.2",
+    "line": 4,
+    "src": "/pokebuddy/patch-notes/0.22.2/champion-red.png",
+    "alt": "레드 (60Lv) 와의 랜덤 배틀 — 메가리자몽Y 의 가뭄",
+    "width": 1116,
+    "height": 615,
+    "now": false
+   },
+   {
+    "version": "0.22.2",
+    "line": 4,
+    "src": "/pokebuddy/patch-notes/0.22.2/champion-cynthia.png",
+    "alt": "챔피언 난천 (60Lv) 과의 랜덤 배틀 — 메가한카리아스·밀로틱·토게키스",
+    "width": 1116,
+    "height": 615,
+    "now": false
+   },
+   {
+    "version": "0.22.2",
+    "line": 4,
+    "src": "/pokebuddy/patch-notes/0.22.2/champion-leon.png",
+    "alt": "챔피언 단델 (60Lv) 과의 랜덤 배틀 — 드래펄트·킬가르도·메가리자몽X",
+    "width": 1116,
+    "height": 615,
+    "now": false
+   },
+   {
+    "version": "0.22.2",
+    "line": 4,
+    "src": "/pokebuddy/patch-notes/0.22.2/champion-detail.png",
+    "alt": "배틀 상세 — 상대 칸에 챔피언 난천 (60Lv) 파티가 보여요(예시 기록)",
+    "width": 640,
+    "height": 682,
+    "now": false
+   }
+  ]
+ },
+ {
   "version": "0.22.1",
   "date": "2026-10-23",
   "lines": [
