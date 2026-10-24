@@ -8,6 +8,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "드래곤조련사",
   "kind": "type-concept",
   "theme": "dragon",
+  "region": null,
   "party": [
    {
     "id": "rayquaza-mega",
@@ -71,6 +72,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "수영팬티소년",
   "kind": "weather",
   "theme": "rain",
+  "region": null,
   "party": [
    {
     "id": "miraidon",
@@ -133,6 +135,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "엘리트트레이너",
   "kind": "weather",
   "theme": "sun",
+  "region": null,
   "party": [
    {
     "id": "victini",
@@ -196,6 +199,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "과학자",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "zacian-crowned",
@@ -259,6 +263,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "베테랑트레이너",
   "kind": "legend",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "mewtwo-mega-x",
@@ -322,6 +327,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "배틀걸",
   "kind": "offense",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "zacian",
@@ -384,6 +390,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "초능력자",
   "kind": "offense",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "hoopa",
@@ -446,6 +453,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "신사",
   "kind": "bulk",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "ting-lu",
@@ -507,6 +515,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "포켓몬레인저",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "shaymin",
@@ -567,6 +576,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "유적마니아",
   "kind": "weather",
   "theme": "sand",
+  "region": null,
   "party": [
    {
     "id": "forretress",
@@ -630,6 +640,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "낚시꾼",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "claydol",
@@ -690,6 +701,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "캠핑보이",
   "kind": "type-concept",
   "theme": "fire",
+  "region": null,
   "party": [
    {
     "id": "ninetales",
@@ -750,6 +762,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "등산가",
   "kind": "weather",
   "theme": "sand",
+  "region": null,
   "party": [
    {
     "id": "archaludon",
@@ -811,6 +824,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "피크닉걸",
   "kind": "weather",
   "theme": "sun",
+  "region": null,
   "party": [
    {
     "id": "tauros-paldea-blaze-breed",
@@ -872,6 +886,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "아로마아가씨",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "toedscruel",
@@ -934,6 +949,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "아가씨",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "gholdengo",
@@ -995,6 +1011,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "폭주족",
   "kind": "offense",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "pinsir",
@@ -1057,6 +1074,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "포켓몬브리더",
   "kind": "bulk",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "slowking-galar",
@@ -1119,6 +1137,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "태권왕",
   "kind": "type-concept",
   "theme": "fighting",
+  "region": null,
   "party": [
    {
     "id": "conkeldurr",
@@ -1180,6 +1199,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "오컬트마니아",
   "kind": "type-concept",
   "theme": "psychic",
+  "region": null,
   "party": [
    {
     "id": "orbeetle",
@@ -1242,6 +1262,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "반바지꼬마",
   "kind": "type-concept",
   "theme": "normal",
+  "region": null,
   "party": [
    {
     "id": "pyroar",
@@ -1301,6 +1322,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "곤충채집소년",
   "kind": "type-concept",
   "theme": "bug",
+  "region": null,
   "party": [
    {
     "id": "vikavolt",
@@ -1364,6 +1386,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "짧은치마",
   "kind": "type-concept",
   "theme": "grass",
+  "region": null,
   "party": [
    {
     "id": "sawsbuck-spring",
@@ -1424,6 +1447,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "도련님",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "blaziken",
@@ -1485,6 +1509,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "쌍둥이",
   "kind": "weather",
   "theme": "sun",
+  "region": null,
   "party": [
    {
     "id": "ninetales",
@@ -1544,6 +1569,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "학원아이",
   "kind": "offense",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "skarmory",
@@ -1606,6 +1632,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "유치원생",
   "kind": "bulk",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "arboliva",
@@ -1667,6 +1694,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "기타리스트",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "perrserker",
@@ -1727,6 +1755,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "백팩커",
   "kind": "type-cover",
   "theme": null,
+  "region": null,
   "party": [
    {
     "id": "sneasler",
@@ -1789,6 +1818,7 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "작업원",
   "kind": "weather",
   "theme": "sand",
+  "region": null,
   "party": [
    {
     "id": "magcargo",
@@ -1847,9 +1877,71 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-01",
   "level": "champion",
-  "name": "챔피언 레드",
+  "name": "챔피언 그린",
   "kind": "champion",
   "theme": null,
+  "region": "관동",
+  "party": [
+   {
+    "id": "pidgeot",
+    "ko": "피죤투",
+    "pokemonId": 18,
+    "types": [
+     "normal",
+     "flying"
+    ]
+   },
+   {
+    "id": "alakazam",
+    "ko": "후딘",
+    "pokemonId": 65,
+    "types": [
+     "psychic"
+    ]
+   },
+   {
+    "id": "rhydon",
+    "ko": "코뿌리",
+    "pokemonId": 112,
+    "types": [
+     "ground",
+     "rock"
+    ]
+   },
+   {
+    "id": "arcanine",
+    "ko": "윈디",
+    "pokemonId": 59,
+    "types": [
+     "fire"
+    ]
+   },
+   {
+    "id": "exeggutor",
+    "ko": "나시",
+    "pokemonId": 103,
+    "types": [
+     "grass",
+     "psychic"
+    ]
+   },
+   {
+    "id": "blastoise-mega",
+    "ko": "메가거북왕",
+    "pokemonId": 10036,
+    "types": [
+     "water"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "champion-02",
+  "level": "champion",
+  "name": "레드",
+  "kind": "champion",
+  "theme": null,
+  "region": "관동",
   "party": [
    {
     "id": "pikachu",
@@ -1860,12 +1952,11 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "lapras",
-    "ko": "라프라스",
-    "pokemonId": 131,
+    "id": "espeon",
+    "ko": "에브이",
+    "pokemonId": 196,
     "types": [
-     "water",
-     "ice"
+     "psychic"
     ]
    },
    {
@@ -1905,82 +1996,13 @@ export const TRAINERS: TrainerInfo[] = [
   ]
  },
  {
-  "id": "champion-02",
-  "level": "champion",
-  "name": "챔피언 그린",
-  "kind": "champion",
-  "theme": null,
-  "party": [
-   {
-    "id": "gyarados",
-    "ko": "갸라도스",
-    "pokemonId": 130,
-    "types": [
-     "water",
-     "flying"
-    ]
-   },
-   {
-    "id": "alakazam",
-    "ko": "후딘",
-    "pokemonId": 65,
-    "types": [
-     "psychic"
-    ]
-   },
-   {
-    "id": "pidgeot-mega",
-    "ko": "메가피죤투",
-    "pokemonId": 10073,
-    "types": [
-     "normal",
-     "flying"
-    ]
-   },
-   {
-    "id": "rhyperior",
-    "ko": "거대코뿌리",
-    "pokemonId": 464,
-    "types": [
-     "ground",
-     "rock"
-    ]
-   },
-   {
-    "id": "exeggutor",
-    "ko": "나시",
-    "pokemonId": 103,
-    "types": [
-     "grass",
-     "psychic"
-    ]
-   },
-   {
-    "id": "arcanine",
-    "ko": "윈디",
-    "pokemonId": 59,
-    "types": [
-     "fire"
-    ]
-   }
-  ]
- },
- {
   "id": "champion-03",
   "level": "champion",
   "name": "챔피언 목호",
   "kind": "champion",
   "theme": null,
+  "region": "성도",
   "party": [
-   {
-    "id": "aerodactyl",
-    "ko": "프테라",
-    "pokemonId": 142,
-    "types": [
-     "rock",
-     "flying"
-    ]
-   },
    {
     "id": "gyarados-mega",
     "ko": "메가갸라도스",
@@ -2000,21 +2022,30 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "kingdra",
-    "ko": "킹드라",
-    "pokemonId": 230,
-    "types": [
-     "water",
-     "dragon"
-    ]
-   },
-   {
     "id": "charizard",
     "ko": "리자몽",
     "pokemonId": 6,
     "types": [
      "fire",
      "flying"
+    ]
+   },
+   {
+    "id": "aerodactyl",
+    "ko": "프테라",
+    "pokemonId": 142,
+    "types": [
+     "rock",
+     "flying"
+    ]
+   },
+   {
+    "id": "kingdra",
+    "ko": "킹드라",
+    "pokemonId": 230,
+    "types": [
+     "water",
+     "dragon"
     ]
    },
    {
@@ -2034,25 +2065,8 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "챔피언 성호",
   "kind": "champion",
   "theme": null,
+  "region": "호연",
   "party": [
-   {
-    "id": "armaldo",
-    "ko": "아말도",
-    "pokemonId": 348,
-    "types": [
-     "rock",
-     "bug"
-    ]
-   },
-   {
-    "id": "aggron",
-    "ko": "보스로라",
-    "pokemonId": 306,
-    "types": [
-     "steel",
-     "rock"
-    ]
-   },
    {
     "id": "skarmory",
     "ko": "무장조",
@@ -2072,12 +2086,12 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "metagross-mega",
-    "ko": "메가메타그로스",
-    "pokemonId": 10076,
+    "id": "aggron",
+    "ko": "보스로라",
+    "pokemonId": 306,
     "types": [
      "steel",
-     "psychic"
+     "rock"
     ]
    },
    {
@@ -2088,6 +2102,24 @@ export const TRAINERS: TrainerInfo[] = [
      "rock",
      "grass"
     ]
+   },
+   {
+    "id": "armaldo",
+    "ko": "아말도",
+    "pokemonId": 348,
+    "types": [
+     "rock",
+     "bug"
+    ]
+   },
+   {
+    "id": "metagross-mega",
+    "ko": "메가메타그로스",
+    "pokemonId": 10076,
+    "types": [
+     "steel",
+     "psychic"
+    ]
    }
   ]
  },
@@ -2097,13 +2129,23 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "챔피언 윤진",
   "kind": "champion",
   "theme": null,
+  "region": "호연",
   "party": [
    {
-    "id": "milotic",
-    "ko": "밀로틱",
-    "pokemonId": 350,
+    "id": "wailord",
+    "ko": "고래왕",
+    "pokemonId": 321,
     "types": [
      "water"
+    ]
+   },
+   {
+    "id": "tentacruel",
+    "ko": "독파리",
+    "pokemonId": 73,
+    "types": [
+     "water",
+     "poison"
     ]
    },
    {
@@ -2116,23 +2158,6 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "gyarados",
-    "ko": "갸라도스",
-    "pokemonId": 130,
-    "types": [
-     "water",
-     "flying"
-    ]
-   },
-   {
-    "id": "wailord",
-    "ko": "고래왕",
-    "pokemonId": 321,
-    "types": [
-     "water"
-    ]
-   },
-   {
     "id": "whiscash",
     "ko": "메깅",
     "pokemonId": 340,
@@ -2142,66 +2167,12 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "tentacruel",
-    "ko": "독파리",
-    "pokemonId": 73,
+    "id": "gyarados-mega",
+    "ko": "메가갸라도스",
+    "pokemonId": 10041,
     "types": [
      "water",
-     "poison"
-    ]
-   }
-  ]
- },
- {
-  "id": "champion-06",
-  "level": "champion",
-  "name": "챔피언 난천",
-  "kind": "champion",
-  "theme": null,
-  "party": [
-   {
-    "id": "garchomp-mega",
-    "ko": "메가한카리아스",
-    "pokemonId": 10058,
-    "types": [
-     "dragon",
-     "ground"
-    ]
-   },
-   {
-    "id": "spiritomb",
-    "ko": "화강돌",
-    "pokemonId": 442,
-    "types": [
-     "ghost",
      "dark"
-    ]
-   },
-   {
-    "id": "lucario",
-    "ko": "루카리오",
-    "pokemonId": 448,
-    "types": [
-     "fighting",
-     "steel"
-    ]
-   },
-   {
-    "id": "roserade",
-    "ko": "로즈레이드",
-    "pokemonId": 407,
-    "types": [
-     "grass",
-     "poison"
-    ]
-   },
-   {
-    "id": "togekiss",
-    "ko": "토게키스",
-    "pokemonId": 468,
-    "types": [
-     "fairy",
-     "flying"
     ]
    },
    {
@@ -2215,11 +2186,75 @@ export const TRAINERS: TrainerInfo[] = [
   ]
  },
  {
+  "id": "champion-06",
+  "level": "champion",
+  "name": "챔피언 난천",
+  "kind": "champion",
+  "theme": null,
+  "region": "신오",
+  "party": [
+   {
+    "id": "spiritomb",
+    "ko": "화강돌",
+    "pokemonId": 442,
+    "types": [
+     "ghost",
+     "dark"
+    ]
+   },
+   {
+    "id": "garchomp-mega",
+    "ko": "메가한카리아스",
+    "pokemonId": 10058,
+    "types": [
+     "dragon",
+     "ground"
+    ]
+   },
+   {
+    "id": "gastrodon",
+    "ko": "트리토돈(서쪽바다의 모습)",
+    "pokemonId": 423,
+    "types": [
+     "water",
+     "ground"
+    ]
+   },
+   {
+    "id": "milotic",
+    "ko": "밀로틱",
+    "pokemonId": 350,
+    "types": [
+     "water"
+    ]
+   },
+   {
+    "id": "lucario",
+    "ko": "루카리오",
+    "pokemonId": 448,
+    "types": [
+     "fighting",
+     "steel"
+    ]
+   },
+   {
+    "id": "togekiss",
+    "ko": "토게키스",
+    "pokemonId": 468,
+    "types": [
+     "fairy",
+     "flying"
+    ]
+   }
+  ]
+ },
+ {
   "id": "champion-07",
   "level": "champion",
   "name": "챔피언 노간주",
   "kind": "champion",
   "theme": null,
+  "region": "하나",
   "party": [
    {
     "id": "accelgor",
@@ -2238,20 +2273,28 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
+    "id": "druddigon",
+    "ko": "크리만",
+    "pokemonId": 621,
+    "types": [
+     "dragon"
+    ]
+   },
+   {
+    "id": "vanilluxe",
+    "ko": "배바닐라",
+    "pokemonId": 584,
+    "types": [
+     "ice"
+    ]
+   },
+   {
     "id": "escavalier",
     "ko": "슈바르고",
     "pokemonId": 589,
     "types": [
      "bug",
      "steel"
-    ]
-   },
-   {
-    "id": "druddigon",
-    "ko": "크리만",
-    "pokemonId": 621,
-    "types": [
-     "dragon"
     ]
    },
    {
@@ -2262,14 +2305,6 @@ export const TRAINERS: TrainerInfo[] = [
      "bug",
      "fire"
     ]
-   },
-   {
-    "id": "vanilluxe",
-    "ko": "배바닐라",
-    "pokemonId": 584,
-    "types": [
-     "ice"
-    ]
    }
   ]
  },
@@ -2279,16 +2314,8 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "챔피언 아이리스",
   "kind": "champion",
   "theme": null,
+  "region": "하나",
   "party": [
-   {
-    "id": "archeops",
-    "ko": "아케오스",
-    "pokemonId": 567,
-    "types": [
-     "rock",
-     "flying"
-    ]
-   },
    {
     "id": "hydreigon",
     "ko": "삼삼드래",
@@ -2296,15 +2323,6 @@ export const TRAINERS: TrainerInfo[] = [
     "types": [
      "dark",
      "dragon"
-    ]
-   },
-   {
-    "id": "aggron",
-    "ko": "보스로라",
-    "pokemonId": 306,
-    "types": [
-     "steel",
-     "rock"
     ]
    },
    {
@@ -2316,11 +2334,20 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "haxorus",
-    "ko": "액스라이즈",
-    "pokemonId": 612,
+    "id": "aggron-mega",
+    "ko": "메가보스로라",
+    "pokemonId": 10053,
     "types": [
-     "dragon"
+     "steel"
+    ]
+   },
+   {
+    "id": "archeops",
+    "ko": "아케오스",
+    "pokemonId": 567,
+    "types": [
+     "rock",
+     "flying"
     ]
    },
    {
@@ -2331,6 +2358,14 @@ export const TRAINERS: TrainerInfo[] = [
      "water",
      "ice"
     ]
+   },
+   {
+    "id": "haxorus",
+    "ko": "액스라이즈",
+    "pokemonId": 612,
+    "types": [
+     "dragon"
+    ]
    }
   ]
  },
@@ -2340,22 +2375,15 @@ export const TRAINERS: TrainerInfo[] = [
   "name": "챔피언 카르네",
   "kind": "champion",
   "theme": null,
+  "region": "칼로스",
   "party": [
    {
-    "id": "gardevoir-mega",
-    "ko": "메가가디안",
-    "pokemonId": 10051,
+    "id": "hawlucha",
+    "ko": "루차불",
+    "pokemonId": 701,
     "types": [
-     "psychic",
-     "fairy"
-    ]
-   },
-   {
-    "id": "goodra",
-    "ko": "미끄래곤",
-    "pokemonId": 706,
-    "types": [
-     "dragon"
+     "fighting",
+     "flying"
     ]
    },
    {
@@ -2368,12 +2396,12 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "hawlucha",
-    "ko": "루차불",
-    "pokemonId": 701,
+    "id": "aurorus",
+    "ko": "아마루르가",
+    "pokemonId": 699,
     "types": [
-     "fighting",
-     "flying"
+     "rock",
+     "ice"
     ]
    },
    {
@@ -2386,12 +2414,20 @@ export const TRAINERS: TrainerInfo[] = [
     ]
    },
    {
-    "id": "aurorus",
-    "ko": "아마루르가",
-    "pokemonId": 699,
+    "id": "goodra",
+    "ko": "미끄래곤",
+    "pokemonId": 706,
     "types": [
-     "rock",
-     "ice"
+     "dragon"
+    ]
+   },
+   {
+    "id": "gardevoir-mega",
+    "ko": "메가가디안",
+    "pokemonId": 10051,
+    "types": [
+     "psychic",
+     "fairy"
     ]
    }
   ]
@@ -2399,19 +2435,73 @@ export const TRAINERS: TrainerInfo[] = [
  {
   "id": "champion-10",
   "level": "champion",
-  "name": "챔피언 단델",
+  "name": "챔피언 쿠쿠이",
   "kind": "champion",
   "theme": null,
+  "region": "알로라",
   "party": [
    {
-    "id": "charizard",
-    "ko": "리자몽",
-    "pokemonId": 6,
+    "id": "lycanroc",
+    "ko": "루가루암(한낮의 모습)",
+    "pokemonId": 745,
     "types": [
-     "fire",
+     "rock"
+    ]
+   },
+   {
+    "id": "ninetales-alola",
+    "ko": "알로라 나인테일",
+    "pokemonId": 38,
+    "types": [
+     "ice",
+     "fairy"
+    ]
+   },
+   {
+    "id": "braviary",
+    "ko": "워글",
+    "pokemonId": 628,
+    "types": [
+     "normal",
      "flying"
     ]
    },
+   {
+    "id": "magnezone",
+    "ko": "자포코일",
+    "pokemonId": 462,
+    "types": [
+     "electric",
+     "steel"
+    ]
+   },
+   {
+    "id": "snorlax",
+    "ko": "잠만보",
+    "pokemonId": 143,
+    "types": [
+     "normal"
+    ]
+   },
+   {
+    "id": "incineroar",
+    "ko": "어흥염",
+    "pokemonId": 727,
+    "types": [
+     "fire",
+     "dark"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "champion-11",
+  "level": "champion",
+  "name": "챔피언 단델",
+  "kind": "champion",
+  "theme": null,
+  "region": "가라르",
+  "party": [
    {
     "id": "aegislash",
     "ko": "킬가르도",
@@ -2454,6 +2544,76 @@ export const TRAINERS: TrainerInfo[] = [
     "types": [
      "water",
      "ground"
+    ]
+   },
+   {
+    "id": "charizard-mega-x",
+    "ko": "메가리자몽X",
+    "pokemonId": 10034,
+    "types": [
+     "fire",
+     "dragon"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "champion-12",
+  "level": "champion",
+  "name": "챔피언 테사",
+  "kind": "champion",
+  "theme": null,
+  "region": "팔데아",
+  "party": [
+   {
+    "id": "espathra",
+    "ko": "클레스퍼트라",
+    "pokemonId": 956,
+    "types": [
+     "psychic"
+    ]
+   },
+   {
+    "id": "gogoat",
+    "ko": "고고트",
+    "pokemonId": 673,
+    "types": [
+     "grass"
+    ]
+   },
+   {
+    "id": "veluza",
+    "ko": "가비루사",
+    "pokemonId": 976,
+    "types": [
+     "water",
+     "psychic"
+    ]
+   },
+   {
+    "id": "avalugg",
+    "ko": "크레베이스",
+    "pokemonId": 713,
+    "types": [
+     "ice"
+    ]
+   },
+   {
+    "id": "kingambit",
+    "ko": "대도각참",
+    "pokemonId": 983,
+    "types": [
+     "dark",
+     "steel"
+    ]
+   },
+   {
+    "id": "glimmora",
+    "ko": "킬라플로르",
+    "pokemonId": 970,
+    "types": [
+     "rock",
+     "poison"
     ]
    }
   ]

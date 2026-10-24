@@ -1,7 +1,8 @@
-import { ChevronDown, Search } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, Search } from 'lucide-react';
 import { Fragment, useMemo, useState } from 'react';
 
 import { cn } from '../../shared/lib/cn';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../shared/ui/select';
 import { MOVES } from '../data/moves.generated';
 import type { MoveClass, MoveInfo, PokemonType } from '../data/dataTypes';
 import { TYPE_KO, TYPE_ORDER } from '../site/pokemonTypes';
@@ -10,26 +11,71 @@ import { TypeIcon } from '../site/TypeIcon';
 
 const CLASS_KO: Record<MoveClass, string> = { physical: '물리', special: '특수', status: '변화' };
 
-type SortKey = 'name' | 'power' | 'cooldown' | 'users';
+type SortKey = 'name' | 'type' | 'class' | 'power' | 'accuracy' | 'cooldown' | 'users';
+type SortDir = 'asc' | 'desc';
 
-const SORTS: { key: SortKey; label: string }[] = [
-  { key: 'users', label: '많이 쓰는 순' },
-  { key: 'power', label: '위력 높은 순' },
-  { key: 'cooldown', label: '대기 짧은 순' },
-  { key: 'name', label: '이름 순' },
+interface SortState {
+  key: SortKey;
+  dir: SortDir;
+}
+
+/** 처음 누를 때 방향 — 숫자는 큰 값이 쓸모 있는 쪽(대기는 짧은 쪽)부터 */
+const DEFAULT_DIR: Record<SortKey, SortDir> = {
+  name: 'asc',
+  type: 'asc',
+  class: 'asc',
+  power: 'desc',
+  accuracy: 'desc',
+  cooldown: 'asc',
+  users: 'desc',
+};
+
+/** 정렬 이름 — [오름, 내림] */
+const SORT_LABEL: Record<SortKey, [asc: string, desc: string]> = {
+  name: ['이름 순', '이름 역순'],
+  type: ['타입 순', '타입 역순'],
+  class: ['분류 순', '분류 역순'],
+  power: ['위력 낮은 순', '위력 높은 순'],
+  accuracy: ['명중 낮은 순', '명중 높은 순'],
+  cooldown: ['대기 짧은 순', '대기 긴 순'],
+  users: ['적게 쓰는 순', '많이 쓰는 순'],
+};
+
+/** 정렬 메뉴에 늘 보이는 것 — 표 머리로 고른 다른 정렬은 메뉴에 한 줄 더 생김 */
+const SORT_PRESETS: SortState[] = [
+  { key: 'users', dir: 'desc' },
+  { key: 'power', dir: 'desc' },
+  { key: 'cooldown', dir: 'asc' },
+  { key: 'name', dir: 'asc' },
 ];
+
+const sortValue = (sort: SortState) => `${sort.key}-${sort.dir}`;
+const sortLabel = (sort: SortState) => SORT_LABEL[sort.key][sort.dir === 'asc' ? 0 : 1];
+const parseSort = (value: string): SortState => {
+  const [key, dir] = value.split('-') as [SortKey, SortDir];
+  return { key, dir };
+};
 
 const totalUsers = (move: MoveInfo) => move.users.base + move.users.candidate + move.users.mega;
 
 /** 한 타 위력 × 타수 — 정렬용 */
 const powerOf = (move: MoveInfo) => (move.power ?? -1) * (move.hits ? move.hits[1]! : 1);
 
+const CLASS_ORDER: MoveClass[] = ['physical', 'special', 'status'];
+
+/** 오름차순 비교 — 내림은 뒤집어 씀. 반드시 맞는 기술(명중 null)은 가장 높게 */
 const COMPARE: Record<SortKey, (a: MoveInfo, b: MoveInfo) => number> = {
   name: (a, b) => a.ko.localeCompare(b.ko, 'ko'),
-  power: (a, b) => powerOf(b) - powerOf(a),
+  type: (a, b) => TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type),
+  class: (a, b) => CLASS_ORDER.indexOf(a.class) - CLASS_ORDER.indexOf(b.class),
+  power: (a, b) => powerOf(a) - powerOf(b),
+  accuracy: (a, b) => (a.accuracy ?? 101) - (b.accuracy ?? 101),
   cooldown: (a, b) => (a.cooldown ?? Infinity) - (b.cooldown ?? Infinity),
-  users: (a, b) => totalUsers(b) - totalUsers(a),
+  users: (a, b) => totalUsers(a) - totalUsers(b),
 };
+
+const compareBy = ({ key, dir }: SortState) => (a: MoveInfo, b: MoveInfo) =>
+  (dir === 'asc' ? COMPARE[key](a, b) : COMPARE[key](b, a)) || COMPARE.name(a, b);
 
 const cooldownText = (move: MoveInfo) => (move.cooldown === null ? '—' : `${move.cooldown}초`);
 
@@ -45,7 +91,7 @@ export const MovesTab = () => {
   const [query, setQuery] = useState('');
   const [type, setType] = useState<PokemonType | null>(null);
   const [moveClass, setMoveClass] = useState<MoveClass | null>(null);
-  const [sort, setSort] = useState<SortKey>('users');
+  const [sort, setSort] = useState<SortState>(SORT_PRESETS[0]!);
   const [openId, setOpenId] = useState<string | null>(null);
 
   const list = useMemo(() => {
@@ -55,8 +101,16 @@ export const MovesTab = () => {
         (!type || move.type === type) &&
         (!moveClass || move.class === moveClass) &&
         (!q || move.ko.includes(q) || move.en.toLowerCase().includes(q)),
-    ).sort(COMPARE[sort]);
+    ).sort(compareBy(sort));
   }, [query, type, moveClass, sort]);
+
+  // 표 머리 — 같은 칸을 다시 누르면 방향만 뒤집음
+  const handleHeaderSort = (key: SortKey) =>
+    setSort((current) =>
+      current.key === key ? { key, dir: current.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: DEFAULT_DIR[key] },
+    );
+
+  const sortOptions = SORT_PRESETS.some((preset) => sortValue(preset) === sortValue(sort)) ? SORT_PRESETS : [...SORT_PRESETS, sort];
 
   return (
     <div className="flex flex-col gap-5">
@@ -88,18 +142,18 @@ export const MovesTab = () => {
               </button>
             ))}
           </div>
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value as SortKey)}
-            aria-label="정렬"
-            className="h-10 cursor-pointer rounded-full border border-border bg-background px-4 text-sm"
-          >
-            {SORTS.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.label}
-              </option>
-            ))}
-          </select>
+          <Select value={sortValue(sort)} onValueChange={(value) => setSort(parseSort(value))}>
+            <SelectTrigger aria-label="정렬" className="min-w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={sortValue(option)} value={sortValue(option)}>
+                  {sortLabel(option)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div role="group" aria-label="타입" className="flex flex-wrap gap-1.5">
           {TYPE_ORDER.map((key) => (
@@ -129,14 +183,14 @@ export const MovesTab = () => {
         <table className="w-full text-sm">
           <thead className="bg-muted text-left text-[13px]">
             <tr>
-              <th className="px-4 py-3 font-bold">기술</th>
-              <th className="px-3 py-3 font-bold">타입</th>
-              <th className="px-3 py-3 font-bold">분류</th>
-              <th className="px-3 py-3 text-right font-bold">위력</th>
-              <th className="px-3 py-3 text-right font-bold">명중</th>
-              <th className="px-3 py-3 text-right font-bold">대기</th>
+              <SortHeader label="기술" sortKey="name" sort={sort} onSort={handleHeaderSort} className="pl-4" />
+              <SortHeader label="타입" sortKey="type" sort={sort} onSort={handleHeaderSort} />
+              <SortHeader label="분류" sortKey="class" sort={sort} onSort={handleHeaderSort} />
+              <SortHeader label="위력" sortKey="power" sort={sort} onSort={handleHeaderSort} align="right" />
+              <SortHeader label="명중" sortKey="accuracy" sort={sort} onSort={handleHeaderSort} align="right" />
+              <SortHeader label="대기" sortKey="cooldown" sort={sort} onSort={handleHeaderSort} align="right" />
               <th className="px-3 py-3 font-bold">효과</th>
-              <th className="px-4 py-3 text-right font-bold">쓰는 종</th>
+              <SortHeader label="쓰는 종" sortKey="users" sort={sort} onSort={handleHeaderSort} align="right" className="pr-4" />
             </tr>
           </thead>
           <tbody>
@@ -208,6 +262,40 @@ export const MovesTab = () => {
         })}
       </ul>
     </div>
+  );
+};
+
+interface SortHeaderProps {
+  label: string;
+  sortKey: SortKey;
+  sort: SortState;
+  onSort: (key: SortKey) => void;
+  align?: 'left' | 'right';
+  className?: string;
+}
+
+/** 누르면 정렬되는 표 머리 칸 — 지금 정렬 칸은 방향 화살표, 나머지는 흐린 위아래 화살표 */
+const SortHeader = ({ label, sortKey, sort, onSort, align = 'left', className }: SortHeaderProps) => {
+  const active = sort.key === sortKey;
+  const Icon = !active ? ArrowUpDown : sort.dir === 'asc' ? ArrowUp : ArrowDown;
+  return (
+    <th
+      aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+      className={cn('px-3 py-2 font-bold', align === 'right' && 'text-right', className)}
+    >
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={cn(
+          '-mx-2 inline-flex h-8 cursor-pointer items-center gap-1 rounded-lg px-2 hover:bg-accent',
+          align === 'right' && 'flex-row-reverse',
+          active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+        )}
+      >
+        {label}
+        <Icon aria-hidden="true" className={cn('size-3.5', !active && 'opacity-50')} />
+      </button>
+    </th>
   );
 };
 

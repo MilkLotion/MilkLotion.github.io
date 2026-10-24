@@ -29,40 +29,9 @@ const KIND_KO: Record<string, string> = {
 /** 날씨 이름 — 원작 표기 */
 const WEATHER_KO: Record<string, string> = { sun: '쾌청', rain: '비', sand: '모래바람', snow: '설경' };
 
-/**
- * 챔피언 지방 — 원작 기준, 세대 순 (2026-10-25 사용자 "성도지방 챔피언 이런거로")
- * - 이 표 순서로 챔피언을 늘어놓음. 표에 없는 챔피언은 끝에 "챔피언 파티"로
- */
-const CHAMPION_REGIONS: [name: string, region: string][] = [
-  ['챔피언 그린', '관동'],
-  ['챔피언 레드', '관동'],
-  ['챔피언 목호', '성도'],
-  ['챔피언 성호', '호연'],
-  ['챔피언 윤진', '호연'],
-  ['챔피언 난천', '신오'],
-  ['챔피언 노간주', '하나'],
-  ['챔피언 아이리스', '하나'],
-  ['챔피언 카르네', '칼로스'],
-  ['챔피언 단델', '가라르'],
-];
-
-const regionOf = (trainer: TrainerInfo) => CHAMPION_REGIONS.find(([name]) => name === trainer.name)?.[1];
-
-const championOrder = (trainer: TrainerInfo) => {
-  const index = CHAMPION_REGIONS.findIndex(([name]) => name === trainer.name);
-  return index === -1 ? CHAMPION_REGIONS.length : index;
-};
-
-/** 데이터 순서 그대로 두고 챔피언만 세대 순으로 — 챔피언은 모두 다른 트레이너 뒤 */
-const TRAINERS_ORDERED = [
-  ...TRAINERS.filter((trainer) => trainer.level !== 'champion'),
-  ...TRAINERS.filter((trainer) => trainer.level === 'champion').sort((a, b) => championOrder(a) - championOrder(b)),
-];
-
 /** 카드 아래 한 줄 — 챔피언은 지방, 나머지는 파티 유형 */
 const subtitleOf = (trainer: TrainerInfo) => {
-  const region = trainer.level === 'champion' ? regionOf(trainer) : undefined;
-  if (region) return `${region}지방 챔피언`;
+  if (trainer.region) return `${trainer.region}지방 챔피언`;
   if (trainer.kind === 'type-concept' && trainer.theme) return `${TYPE_KO[trainer.theme as PokemonType]} 타입 파티`;
   if (trainer.kind === 'weather' && trainer.theme) return `${WEATHER_KO[trainer.theme]} 파티`;
   return KIND_KO[trainer.kind] ?? '';
@@ -74,7 +43,7 @@ const subtitleOf = (trainer: TrainerInfo) => {
  */
 export const TrainersTab = () => {
   const [level, setLevel] = useState<TrainerLevel | null>(null);
-  const list = TRAINERS_ORDERED.filter((trainer) => !level || trainer.level === level);
+  const list = TRAINERS.filter((trainer) => !level || trainer.level === level);
 
   return (
     <div className="flex flex-col gap-5">

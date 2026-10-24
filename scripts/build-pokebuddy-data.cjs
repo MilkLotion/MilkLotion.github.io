@@ -149,7 +149,15 @@ function themeOf(sample, party) {
 
 const trainers = samples.map((sample) => {
   const party = sample.slots.map(pokemonOf);
-  return { id: sample.id, level: sample.level, name: sample.name, kind: sample.kind, theme: themeOf(sample, party), party };
+  return {
+    id: sample.id,
+    level: sample.level,
+    name: sample.name,
+    kind: sample.kind,
+    theme: themeOf(sample, party),
+    region: sample.region ?? null,
+    party,
+  };
 });
 
 // 패치노트 그림 — manifest 가 있을 때만. 없으면 글만

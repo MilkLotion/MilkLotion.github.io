@@ -63,6 +63,8 @@ export interface TrainerInfo {
   kind: string;
   /** 한 타입 파티는 그 타입, 날씨 파티는 sun·rain·sand·snow. 그 밖에는 null */
   theme: string | null;
+  /** 챔피언의 지방 (관동·성도 …). 데이터 순서가 세대 순 */
+  region: string | null;
   /** 칸 순서가 배치 — 2·4·6번 앞 열, 1·3·5번 뒤 열 */
   party: PartyPokemon[];
 }
