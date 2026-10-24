@@ -4,12 +4,7 @@
  * - 앱 캡처 원본은 _reference/captures/ (공개 저장소 밖). 쓰는 것만 public/pokebuddy/images/ 로 복사
  */
 
-export const GUIDE_URL = '/pokebuddy/guide/';
-export const IMAGE_BASE = '/pokebuddy/images';
-
-/** PokeAPI 정지 도트 — 앱 초상과 같은 출처 (src/main/art/sources.ts) */
-export const spriteUrl = (pokemonId: number) =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+import { IMAGE_BASE } from '../site/links';
 
 export interface Capture {
   src: string;
@@ -34,7 +29,7 @@ export const HERO_CAPTURES: Capture[] = [
   },
 ];
 
-export type FeatureDot = 'care' | 'egg' | 'mega' | 'battle' | 'friends';
+export type FeatureDot = 'care' | 'egg' | 'evolve' | 'battle' | 'friends';
 
 export interface Feature {
   id: string;
@@ -58,18 +53,18 @@ export const FEATURES: Feature[] = [
   {
     id: 'egg',
     dot: 'egg',
-    label: '알과 진화',
+    label: '알',
     title: '포인트로 알을 사고, 직접 깨요',
-    body: '알은 돌보미집에서 준비 시간을 채운 뒤 열어요. 경험사탕으로 레벨을 올리고, 진화 조건을 채우면 알림이 와요. 진화는 직접 눌러요.',
+    body: '알은 돌보미집에서 준비 시간을 채운 뒤 열어요. 어떤 포켓몬이 나올지는 열어 봐야 알아요.',
     capture: { src: `${IMAGE_BASE}/03-egg-daycare.png`, alt: '돌보미집 — 부화 준비가 끝난 알과 열기 단추', width: 640, height: 682 },
   },
   {
-    id: 'mega',
-    dot: 'mega',
-    label: '메가진화',
-    title: '오래 함께한 포켓몬은 메가진화해요',
-    body: '친밀도 100, Lv.60을 채우고, 친밀도 100이 된 뒤 파티에서 24시간을 보내고, 놀아주기를 30번 하면 메가스톤이 생겨요. 메가진화는 풀리지 않고 그대로 이어져요.',
-    capture: { src: `${IMAGE_BASE}/04-mega.png`, alt: '파티 탭과 메가리자몽X 상세 창', width: 1084, height: 746 },
+    id: 'evolve',
+    dot: 'evolve',
+    label: '진화',
+    title: '조건을 채우면 직접 진화시켜요',
+    body: '파티에 두면 시간이 지나며 레벨이 올라요. 레벨, 친밀도, 진화 도구, 낮과 밤 같은 조건을 채우면 알림이 오고, 진화는 직접 눌러요. 갈래가 여럿이면 어느 쪽으로 갈지 골라요.',
+    capture: { src: `${IMAGE_BASE}/04-evolve.png`, alt: '이브이 진화 창 — 샤미드·에브이·님피아 등 8갈래와 조건', width: 1084, height: 746 },
   },
   {
     id: 'battle',
@@ -83,30 +78,10 @@ export const FEATURES: Feature[] = [
     id: 'friends',
     dot: 'friends',
     label: '친구와 함께',
-    title: '링크 하나로 교환하고 배틀해요',
+    title: '친구와 교환하고 배틀해요',
     body: '교환 링크를 만들어 친구에게 보내면 포켓몬을 한 마리씩 바꿔요. 친선 배틀도 링크로 걸어요. 교환과 친선 배틀은 로그인한 계정으로 해요.',
     capture: { src: `${IMAGE_BASE}/06-trade.png`, alt: '친구 교환 화면 — 내 피카츄와 친구의 이브이', width: 640, height: 682 },
   },
-];
-
-export type TypeKey = 'electric' | 'fighting' | 'grass';
-
-export interface MovePreview {
-  id: string;
-  name: string;
-  type: TypeKey;
-  typeLabel: string;
-  power: number;
-  accuracy: number;
-  cooldown: number;
-  note: string;
-}
-
-/** data/moves.json 값 그대로 */
-export const MOVE_PREVIEWS: MovePreview[] = [
-  { id: 'thunderbolt', name: '10만볼트', type: 'electric', typeLabel: '전기', power: 90, accuracy: 100, cooldown: 6, note: '특수 · 10% 확률로 마비' },
-  { id: 'close-combat', name: '인파이트', type: 'fighting', typeLabel: '격투', power: 120, accuracy: 100, cooldown: 6.5, note: '물리 · 접촉 · 내 방어·특수방어 1단계 하락' },
-  { id: 'giga-drain', name: '기가드레인', type: 'grass', typeLabel: '풀', power: 75, accuracy: 100, cooldown: 5, note: '특수 · 준 피해의 50% 회복' },
 ];
 
 export const INSTALL_STEPS = {

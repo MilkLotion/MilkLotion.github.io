@@ -1,11 +1,12 @@
-import { GUIDE_URL } from './content';
-import { REPO_URL, RELEASES_URL } from './release';
+import { DEX_URL, GUIDE_URL, PATCH_NOTES_URL } from './links';
+import { REPO_URL } from './release';
 
 const FOOTER_LINKS = [
   { href: REPO_URL, label: 'GitHub' },
   { href: `${REPO_URL}#라이선스`, label: '그림 출처와 라이선스' },
   { href: GUIDE_URL, label: '공략' },
-  { href: RELEASES_URL, label: '패치노트' },
+  { href: DEX_URL, label: '도감' },
+  { href: PATCH_NOTES_URL, label: '패치노트' },
   { href: '/', label: 'milklotion.github.io' },
 ] as const;
 

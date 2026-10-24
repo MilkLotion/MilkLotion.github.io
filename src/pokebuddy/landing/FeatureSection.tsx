@@ -1,12 +1,13 @@
 import { ArrowRight } from 'lucide-react';
 
 import { cn } from '../../shared/lib/cn';
-import { FEATURES, GUIDE_URL, type Feature, type FeatureDot } from './content';
+import { GUIDE_URL } from '../site/links';
+import { FEATURES, type Feature, type FeatureDot } from './content';
 
 const DOT_CLASS: Record<FeatureDot, string> = {
   care: 'bg-dot-care',
   egg: 'bg-dot-egg',
-  mega: 'bg-dot-mega',
+  evolve: 'bg-dot-evolve',
   battle: 'bg-dot-battle',
   friends: 'bg-dot-friends',
 };

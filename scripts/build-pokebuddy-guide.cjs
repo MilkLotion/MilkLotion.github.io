@@ -1,9 +1,12 @@
-// pokebuddy 웹 가이드 만들기 — pokebuddy 저장소의 docs/guide.md 를 public/pokebuddy/guide/ 정적 HTML 한 쪽으로 바꾼다
+// pokebuddy 웹 가이드 만들기 — pokebuddy 저장소의 docs/guide.md 를 설명서 쪽(/pokebuddy/guide/)이 읽는 장별 데이터로 바꾼다
+// - 출력: src/pokebuddy/guide/guide.generated.ts (장마다 제목·본문 HTML·소제목) + public/pokebuddy/guide/images/ (그림)
+// - 화면은 src/pokebuddy/guide/GuidePage.tsx — 랜딩과 같은 헤더·토큰, 장 단위 보기
+// - ## 제목 하나가 한 장. 첫 ## 앞(저장소 문서 안내)은 웹에 싣지 않음
 // - pokebuddy 저장소 scripts/build-guide-site.cjs 에서 옮겨 옴 (2026-10-24 웹 페이지를 이 저장소로 통합)
 // - 원본은 pokebuddy 저장소 docs/guide.md 하나뿐이다. 웹 가이드만 고치지 않는다 (2026-10-10 사용자 "설치부터 전부")
 // - 자동 연동 없음 — 설명서가 바뀌면 손으로 다시 실행해 커밋한다 (2026-10-24 사용자 결정)
 // - guide.md 가 쓰는 마크다운만 다룬다: 제목 #~####(목차에는 ##·### 만), 문단, 목록(-, 1. 두 칸 들여쓰기), 표, 그림, 인라인 코드·링크·굵게, HTML 주석
-// - 상대 링크(specs/…·contributing/…·../README.md)는 GitHub 저장소 주소로, 그림은 출력 폴더 images/ 로 복사한다
+// - 상대 링크(specs/…·contributing/…·../README.md)는 GitHub 저장소 주소로, 그림은 images/ 로 복사하고 원본 크기를 적는다
 // - 새 패키지 없이 node 기본 모듈만 쓴다
 // 실행: npm run sync:pokebuddy [pokebuddy 저장소 경로, 기본 ../2.pokebuddy/pokebuddy]
 'use strict';
@@ -15,7 +18,10 @@ const ROOT = path.resolve(__dirname, '..');
 // pokebuddy 저장소 — 그림·설명서 원본 위치
 const SOURCE = path.resolve(ROOT, process.argv[2] || '../2.pokebuddy/pokebuddy');
 const SRC = path.join(SOURCE, 'docs', 'guide.md');
-const OUT = path.join(ROOT, 'public', 'pokebuddy', 'guide');
+const OUT_IMAGES = path.join(ROOT, 'public', 'pokebuddy', 'guide', 'images');
+const OUT_DATA = path.join(ROOT, 'src', 'pokebuddy', 'guide', 'guide.generated.ts');
+// 웹에서 그림 주소 — 장 주소(#…)와 상관없이 같은 곳
+const IMAGE_URL = '/pokebuddy/guide/';
 const REPO = 'https://github.com/MilkLotion/pokebuddy';
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -24,6 +30,13 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 const slug = (s) => s.trim().toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
 
 const images = new Set();
+
+// PNG 머리(IHDR)에서 원본 크기 — 그림을 원본보다 키우지 않으려고 씀
+function pngSize(file) {
+  const buf = fs.readFileSync(file);
+  if (buf.toString('ascii', 1, 4) !== 'PNG') throw new Error(`PNG 아님: ${file}`);
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
 
 // 링크 주소 — 저장소 안 상대 경로는 GitHub 주소로. 같은 쪽 앵커와 바깥 주소는 그대로
 function href(url) {
@@ -41,7 +54,8 @@ function inline(text) {
   s = esc(s);
   s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => {
     images.add(src);
-    return `<img src="${src}" alt="${alt}" loading="lazy">`;
+    const { width, height } = pngSize(path.join(SOURCE, 'docs', src));
+    return `<img src="${IMAGE_URL}${src}" alt="${alt}" width="${width}" height="${height}" style="max-width:${width}px" loading="lazy">`;
   });
   s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) => {
     const to = href(url.replace(/&amp;/g, '&'));
@@ -49,17 +63,47 @@ function inline(text) {
     return `<a href="${esc(to)}"${outside}>${label}</a>`;
   });
   s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${esc(codes[Number(i)])}</code>`);
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => codeHtml(codes[Number(i)]));
+}
+
+// 인라인 코드 — 한글이 든 것과 ✕·◀·?·‹ › 같은 기호 단추는 앱 화면의 단추·탭 이름이라 칩으로, 나머지(경로·명령)는 코드로
+function codeHtml(text) {
+  const isUiLabel = /[가-힣]/.test(text) || /^[^\p{L}\p{N}]{1,3}$/u.test(text);
+  return isUiLabel ? `<span class="ui-label">${esc(text)}</span>` : `<code>${esc(text)}</code>`;
+}
+
+// 그림만 있는 줄 → 그림 + 캡션(대체 글). 좁은 그림(메뉴 등)은 넓은 화면에서 글 옆으로
+const NARROW_FIGURE_PX = 420;
+function figureHtml(line) {
+  const [, alt, src] = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line);
+  const { width } = pngSize(path.join(SOURCE, 'docs', src));
+  const narrow = width <= NARROW_FIGURE_PX ? ' class="is-narrow"' : '';
+  return `<figure${narrow}>${inline(line)}${alt ? `<figcaption>${esc(alt)}</figcaption>` : ''}</figure>`;
+}
+
+// ### 절마다 한 덩어리로 감쌈 — 화면에서 절이 카드처럼 나뉘게. 첫 ### 앞은 장 도입부
+function wrapSections(html) {
+  const [intro, ...parts] = html.split(/\n(?=<h3 )/);
+  if (intro.startsWith('<h3 ')) parts.unshift(intro);
+  const lead = intro.startsWith('<h3 ') ? '' : `<div class="guide-intro">\n${intro}\n</div>\n`;
+  return lead + parts.map((part) => `<section class="guide-block">\n${part}\n</section>`).join('\n');
 }
 
 // 표 한 줄 — 앞뒤 | 를 떼고 \| 는 글자로 둔다
 const cells = (line) => line.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, '|'));
 
+// ### 하나하나를 따로 한 장으로 나누는 ## — 팁은 공략마다 한 쪽 (2026-10-25 사용자 "팁도 다 페이지 분리해")
+// - 나뉜 장은 group 에 원래 ## id 를 적음. ## 바로 아래 도입 문단은 버림
+const SPLIT_CHAPTERS = new Set(['팁']);
+
+// 장 나누기 — ## 마다 새 장. 본문은 그 장의 out 에 쌓고, 첫 ## 앞은 버림
 function render(md) {
   const lines = md.replace(/\r\n/g, '\n').replace(/<!--[\s\S]*?-->/g, '').split('\n');
-  const out = [];
-  const toc = [];
+  const chapters = [];
+  let out = [];
   let title = 'pokebuddy';
+  // 지금 나누는 중인 ## id (SPLIT_CHAPTERS)
+  let splitting = null;
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
@@ -68,10 +112,17 @@ function render(md) {
     if (h) {
       const level = h[1].length;
       const text = h[2].trim();
+      const id = slug(text);
       if (level === 1) title = text;
-      else {
-        const id = slug(text);
-        if (level <= 3) toc.push({ level, text, id });
+      else if (level === 2) {
+        out = [];
+        splitting = SPLIT_CHAPTERS.has(id) ? id : null;
+        if (!splitting) chapters.push({ id, title: text, sections: [], out });
+      } else if (level === 3 && splitting) {
+        out = [];
+        chapters.push({ id, title: text, sections: [], out, group: splitting });
+      } else {
+        if (level === 3 && chapters.length) chapters[chapters.length - 1].sections.push({ id, title: text });
         out.push(`<h${level} id="${esc(id)}">${inline(text)}</h${level}>`);
       }
       i += 1;
@@ -112,7 +163,7 @@ function render(md) {
     }
     // 그림만 있는 줄
     if (/^!\[[^\]]*\]\([^)]+\)\s*$/.test(line.trim())) {
-      out.push(`<figure>${inline(line.trim())}</figure>`);
+      out.push(figureHtml(line.trim()));
       i += 1;
       continue;
     }
@@ -121,100 +172,40 @@ function render(md) {
     while (i < lines.length && lines[i].trim() && !/^#{1,4}\s/.test(lines[i]) && !/^\s*(-|\d+\.)\s+/.test(lines[i]) && !lines[i].trim().startsWith('|')) para.push(lines[i++].trim());
     out.push(`<p>${inline(para.join(' '))}</p>`);
   }
-  return { title, toc, body: out.join('\n') };
+  return {
+    title,
+    chapters: chapters.map(({ id, title: chapterTitle, sections, out: body, group }) => ({
+      id,
+      title: chapterTitle,
+      ...(group ? { group } : {}),
+      sections,
+      html: wrapSections(body.join('\n')),
+    })),
+  };
 }
-
-function tocHtml(toc) {
-  const items = [];
-  let open = false;
-  for (const t of toc) {
-    if (t.level === 2) {
-      if (open) items.push('</ul></li>');
-      items.push(`<li><a href="#${esc(t.id)}">${inline(t.text)}</a><ul>`);
-      open = true;
-    } else items.push(`<li><a href="#${esc(t.id)}">${inline(t.text)}</a></li>`);
-  }
-  if (open) items.push('</ul></li>');
-  return `<ul>${items.join('')}</ul>`.replace(/<ul><\/ul>/g, '');
-}
-
-const CSS = `
-:root { --bg: #f0efea; --card: #ffffff; --ink: #1a3330; --sub: #5c6f6c; --line: #dcdcd4; --accent: #1e7a6c; --tone: #e2efec; }
-@media (prefers-color-scheme: dark) { :root { --bg: #141c1b; --card: #1c2726; --ink: #e6eeec; --sub: #9db0ad; --line: #2c3a38; --accent: #2aa593; --tone: #203533; } }
-* { box-sizing: border-box; }
-html { scroll-padding-top: 16px; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.7 system-ui, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; }
-a { color: var(--accent); }
-.wrap { display: grid; grid-template-columns: 240px minmax(0, 760px); gap: 32px; max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
-nav { position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow: auto; font-size: 13px; }
-nav ul { list-style: none; margin: 0; padding: 0; }
-nav > ul > li { margin: 6px 0; }
-nav > ul > li > a { font-weight: 600; color: var(--ink); }
-nav ul ul { padding-left: 12px; }
-nav ul ul a { color: var(--sub); }
-nav a { text-decoration: none; display: block; padding: 2px 0; }
-nav a:hover { color: var(--accent); }
-main { min-width: 0; }
-header.top { margin-bottom: 24px; }
-header.top h1 { margin: 0 0 4px; font-size: 28px; }
-header.top p { margin: 0; color: var(--sub); }
-h2 { margin: 48px 0 12px; padding-top: 8px; font-size: 22px; border-top: 1px solid var(--line); }
-h3 { margin: 28px 0 8px; font-size: 17px; }
-h4 { margin: 20px 0 6px; font-size: 15px; }
-p, li { word-break: keep-all; overflow-wrap: anywhere; }
-ul, ol { padding-left: 22px; }
-li { margin: 4px 0; }
-code { font: 13px/1.4 ui-monospace, Consolas, monospace; background: var(--tone); padding: 1px 5px; border-radius: 4px; }
-.table { overflow-x: auto; margin: 12px 0; }
-table { border-collapse: collapse; width: 100%; background: var(--card); border-radius: 8px; overflow: hidden; font-size: 14px; }
-th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
-th { background: var(--tone); }
-td code, th code { white-space: nowrap; }
-figure { margin: 16px 0; }
-figure img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
-footer { margin-top: 48px; font-size: 12px; color: var(--sub); }
-@media (max-width: 860px) {
-  .wrap { grid-template-columns: 1fr; gap: 16px; padding-top: 20px; }
-  nav { position: static; max-height: none; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
-  nav ul ul { display: none; }
-}
-`;
 
 function main() {
-  const { title, toc, body } = render(fs.readFileSync(SRC, 'utf8'));
-  const html = `<!doctype html>
-<!-- 만든 파일 — 고치지 말 것. 원본은 pokebuddy 저장소 docs/guide.md, 만드는 곳은 MilkLotion.github.io 저장소 scripts/build-pokebuddy-guide.cjs -->
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)}</title>
-<style>${CSS}</style>
-</head>
-<body>
-<div class="wrap">
-<nav aria-label="목차">${tocHtml(toc)}</nav>
-<main>
-<header class="top"><h1>${esc(title)}</h1><p><a href="${REPO}/releases/latest" target="_blank" rel="noopener">최신 버전 받기</a> · <a href="${REPO}" target="_blank" rel="noopener">GitHub 저장소</a></p></header>
-${body}
-<footer>pokebuddy 는 팬이 만든 비공식 앱이에요. Nintendo · Creatures Inc. · GAME FREAK inc. · The Pokémon Company 와 제휴하지 않았어요.<br>포켓몬의 권리는 Nintendo · Creatures Inc. · GAME FREAK inc. 에 있어요.</footer>
-</main>
-</div>
-</body>
-</html>
+  const { title, chapters } = render(fs.readFileSync(SRC, 'utf8'));
+  const ts = `// 만든 파일 — 고치지 말 것. 원본은 pokebuddy 저장소 docs/guide.md, 만드는 곳은 scripts/build-pokebuddy-guide.cjs (npm run sync:pokebuddy)
+import type { GuideChapter } from './guideTypes';
+
+export const GUIDE_TITLE = ${JSON.stringify(title)};
+
+export const GUIDE_CHAPTERS: GuideChapter[] = ${JSON.stringify(chapters, null, 2)};
 `;
-  // 이전 설명서 그림이 남지 않게 비우고 다시 생성
-  fs.rmSync(OUT, { recursive: true, force: true });
-  fs.mkdirSync(OUT, { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'index.html'), html);
+  fs.mkdirSync(path.dirname(OUT_DATA), { recursive: true });
+  fs.writeFileSync(OUT_DATA, ts);
+  // 이전 설명서 그림이 남지 않게 비우고 다시 복사 (images/ 아래만)
+  fs.rmSync(OUT_IMAGES, { recursive: true, force: true });
   for (const src of images) {
     const from = path.join(SOURCE, 'docs', src);
     if (!fs.existsSync(from)) throw new Error(`그림 없음: docs/${src}`);
-    fs.mkdirSync(path.dirname(path.join(OUT, src)), { recursive: true });
-    fs.copyFileSync(from, path.join(OUT, src));
+    const to = path.join(OUT_IMAGES, '..', src);
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(from, to);
   }
-  process.stdout.write(`웹 가이드: ${path.relative(ROOT, OUT)}/index.html · 제목 ${toc.length}개 · 그림 ${images.size}개
-`);
+  process.stdout.write(`웹 가이드: ${path.relative(ROOT, OUT_DATA)} · 장 ${chapters.length}개 · 그림 ${images.size}개\n`);
 }
 
 main();
+

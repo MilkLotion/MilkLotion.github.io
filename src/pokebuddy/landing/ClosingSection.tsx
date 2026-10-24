@@ -1,5 +1,5 @@
 import { Button } from '../../shared/ui/button';
-import { spriteUrl } from './content';
+import { spriteUrl } from '../site/links';
 
 /** 스타터 예시 — 1세대 첫 포켓몬 3종 */
 const STARTER_IDS = [1, 4, 7] as const;

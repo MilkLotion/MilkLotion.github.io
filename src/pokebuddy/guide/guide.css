@@ -1,0 +1,278 @@
+/*
+ * 설명서 본문 — guide.generated.ts 의 HTML 에 입히는 글 모양
+ * - 색·반경은 공통 토큰(src/shared/styles/globals.css)
+ * - 강조 테두리 없음: 절 카드·표는 1px 중립 테두리만, 칩은 tonal 배경만
+ * - 생성기가 붙이는 틀: .guide-intro(장 도입부) · .guide-block(### 절) · figure.is-narrow · .ui-label(앱 단추·탭 이름)
+ */
+html {
+  /* 위에 붙는 헤더(72px) 아래로 제목이 오게 */
+  scroll-padding-top: 96px;
+}
+
+.guide-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+/* 절 사이 간격은 .guide-prose gap, 절 안 간격은 아래 */
+.guide-intro > * + *,
+.guide-block > * + * {
+  margin-top: 0.9em;
+}
+
+/* 장 도입부 — 카드 없이 조금 큰 글 */
+.guide-intro {
+  display: flow-root;
+  padding: 4px 4px 8px;
+  font-size: 17px;
+}
+
+/* ### 절 하나 = 카드 하나 */
+.guide-block {
+  display: flow-root;
+  padding: 24px 28px 28px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--card);
+}
+
+@media (max-width: 639px) {
+  .guide-block {
+    padding: 20px 18px 22px;
+  }
+}
+
+.guide-prose h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* 절 제목 앞 작은 dot — 분류가 아니라 제목 표시라 primary 한 색 */
+.guide-prose h3::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.guide-prose h4 {
+  margin-top: 1.6em;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.guide-prose h3 + *,
+.guide-prose h4 + * {
+  margin-top: 0.6em;
+}
+
+.guide-prose a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.guide-prose a:hover {
+  color: var(--primary-hover);
+}
+
+.guide-prose strong {
+  font-weight: 700;
+}
+
+/* 목록 — 칸마다 숨 쉴 틈. 글머리는 작은 primary 점 */
+.guide-prose ul,
+.guide-prose ol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-prose ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.guide-prose ul > li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.guide-prose ul > li::before {
+  content: '';
+  position: absolute;
+  top: 0.72em;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+.guide-prose ul ul,
+.guide-prose ol ul,
+.guide-prose ul ol {
+  margin-top: 8px;
+}
+
+/* 번호 목록 — 숫자를 둥근 칸에 (Galmuri) */
+.guide-prose ol {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: guide-step;
+}
+
+.guide-prose ol > li {
+  position: relative;
+  padding-left: 36px;
+  counter-increment: guide-step;
+}
+
+.guide-prose ol > li::before {
+  content: counter(guide-step);
+  position: absolute;
+  top: 0.15em;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--primary);
+  font-family: 'Galmuri11', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 앱 화면의 단추·탭 이름 — 단추처럼 보이는 칩 */
+.guide-prose .ui-label {
+  display: inline-block;
+  margin: 0 1px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--foreground);
+  font-size: 0.86em;
+  font-weight: 600;
+  line-height: 1.75;
+  white-space: nowrap;
+  vertical-align: 0.06em;
+}
+
+.guide-prose code {
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+  background: var(--muted);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.86em;
+}
+
+.guide-prose .table {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.guide-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  font-size: 14px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.guide-prose th,
+.guide-prose td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.guide-prose tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--muted) 45%, transparent);
+}
+
+.guide-prose tr:last-child td {
+  border-bottom: 0;
+}
+
+.guide-prose th {
+  background: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 첫 칸은 항목 이름 — 굵게 */
+.guide-prose td:first-child {
+  font-weight: 600;
+}
+
+.guide-prose td code,
+.guide-prose td .ui-label {
+  white-space: nowrap;
+}
+
+/* 그림 — 가운데, 아래 캡션 */
+.guide-prose figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+
+.guide-prose figcaption {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  text-align: center;
+}
+
+/*
+ * 좁은 그림(메뉴 등)이 든 절 — 넓은 화면에선 글 | 그림 두 칸
+ * - 그림이 글 끝에 있어도 오른쪽 칸 맨 위에 붙음. 빈 줄(암시 행)은 높이 0
+ */
+@media (min-width: 768px) {
+  .guide-intro:has(> figure.is-narrow),
+  .guide-block:has(> figure.is-narrow) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 36px;
+    align-items: start;
+  }
+
+  .guide-intro > figure.is-narrow,
+  .guide-block > figure.is-narrow {
+    grid-column: 2;
+    grid-row: 1 / span 30;
+    margin: 0;
+  }
+}
+
+/*
+ * 원본 크기(style max-width)보다 키우지 않음
+ * - 테두리 상자 대신 drop-shadow — 창 두 개를 붙인 그림(evolve 등)의 투명한 귀퉁이를 따라감
+ */
+.guide-prose img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 1px rgba(26, 51, 48, 0.35)) drop-shadow(0 12px 24px rgba(26, 51, 48, 0.12));
+}

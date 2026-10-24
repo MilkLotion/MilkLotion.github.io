@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../shared/ui/tabs';
 import { INSTALL_STEPS } from './content';
-import { detectPlatform } from './release';
+import { detectPlatform } from '../site/release';
 
 type InstallTab = keyof typeof INSTALL_STEPS;
 

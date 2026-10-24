@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Button } from '../../shared/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../shared/ui/dropdown-menu';
-import { detectPlatform, PLATFORM_LABELS, type Platform, type ReleaseInfo } from './release';
+import { detectPlatform, PLATFORM_LABELS, type Platform, type ReleaseInfo } from '../site/release';
 
 const PLATFORMS: Platform[] = ['windows', 'mac-arm64', 'mac-x64'];
 

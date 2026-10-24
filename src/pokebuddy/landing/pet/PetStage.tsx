@@ -9,7 +9,7 @@ import { createBrain, type Brain, type Play, type Point, type RoamBox } from './
  * - 좌표는 화면(뷰포트) px. 끌어서 놓을 수 있는 범위도 화면 전체
  * - 한 마리마다 brain(판단) 하나 + 그림 칸 하나. 매 프레임 DOM 스타일만 바꿈 — React 렌더 없음
  * - 스스로는 자기 "줄" 높이를 따라 화면 너비 안에서 좌우로만 걸음
- *   - 처음 줄: 페이지를 열었을 때 히어로 캡처(anchor) 윗변. 화면 밖이면 화면 아래 끝
+ *   - 처음 줄: 페이지 맨 위에서 본 히어로 캡처(anchor) 윗변 높이. 스크롤 위치와 무관. 화면보다 낮으면 화면 아래 끝
  *   - 놓은 뒤: 놓은 높이
  */
 
@@ -105,7 +105,9 @@ export const PetStage = ({ sprites, starts, zoom, anchorRef }: PetStageProps) =>
     petsRef.current = sprites.map((sprite, index) => {
       const { w, h } = cellOf(sprite, zoom);
       const x = a.left + w / 2 + (starts[index] ?? 0.5) * Math.max(0, a.width - w);
-      const laneY = Math.min(a.top - feet, stage.clientHeight - feet);
+      // 스크롤 위치와 상관없이 맨 위에서 열었을 때의 캡처 윗변 높이 — 스크롤한 채 새로고침해도 같은 자리
+      // (브라우저가 스크롤을 되살리는 시점이 이 계산보다 앞일 수도 뒤일 수도 있어 문서 좌표로 잼)
+      const laneY = Math.min(Math.max(a.top + window.scrollY - feet, h / 2), stage.clientHeight - feet);
       return {
         sprite,
         brain: createBrain({ sprite, zoom, start: { x, y: laneY }, autonomous: !reduced }),

@@ -2,9 +2,10 @@ import type { Ref } from 'react';
 
 import { cn } from '../../shared/lib/cn';
 import { DownloadButtons } from './DownloadButtons';
-import { HERO_CAPTURES, IMAGE_BASE } from './content';
-import type { ReleaseInfo } from './release';
-import { SiteHeader } from './SiteHeader';
+import { IMAGE_BASE } from '../site/links';
+import { HERO_CAPTURES } from './content';
+import type { ReleaseInfo } from '../site/release';
+import { SiteHeader } from '../site/SiteHeader';
 
 const HERO_CAPTURES_WIDTH = HERO_CAPTURES.reduce((sum, capture) => sum + capture.width, 0);
 

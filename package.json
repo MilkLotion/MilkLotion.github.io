@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "sync:pokebuddy": "node scripts/build-pokebuddy-guide.cjs"
+    "sync:pokebuddy": "node scripts/build-pokebuddy-guide.cjs && node scripts/build-pokebuddy-data.cjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
