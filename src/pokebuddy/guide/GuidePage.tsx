@@ -6,11 +6,10 @@ import { spriteUrl } from '../site/links';
 import { SiteFooter } from '../site/SiteFooter';
 import { SiteHeader } from '../site/SiteHeader';
 import { chapterMeta, GROUP_DOT, GROUP_LABELS, GUIDE_GROUPS, ORDERED_CHAPTERS } from './chapterMeta';
-import { GUIDE_TITLE } from './guide.generated';
 import type { GuideChapter } from './guideTypes';
 import { chapterHref, useGuideRoute } from './useGuideRoute';
 
-/** 장 머리·첫 화면 띠 — 랜딩 히어로와 같은 남색 → 청록 */
+/** 장 머리 띠 — 랜딩 히어로와 같은 남색 → 청록 */
 const BAND_CLASS = 'bg-[linear-gradient(135deg,var(--brand-deep)_0%,var(--brand-navy)_45%,var(--brand-teal)_100%)] text-white';
 
 /**
@@ -18,6 +17,7 @@ const BAND_CLASS = 'bg-[linear-gradient(135deg,var(--brand-deep)_0%,var(--brand-
  * - 내용은 pokebuddy 저장소 docs/guide.md 그대로 (npm run sync:pokebuddy 로 만든 guide.generated.ts)
  * - 장 꾸밈(아이콘·묶음·포켓몬)은 chapterMeta.ts
  * - 넓은 화면: 왼쪽 묶음별 장 목록 · 본문. 좁은 화면: 본문 위 접는 목차
+ * - 따로 된 목차 화면 없음 — 주소가 비었으면 첫 장(설치) (2026-10-25 사용자)
  */
 export const GuidePage = () => {
   const { chapter, anchor, hash } = useGuideRoute();
@@ -29,20 +29,14 @@ export const GuidePage = () => {
   }, [hash, anchor]);
 
   useEffect(() => {
-    document.title = chapter ? `${chapter.title} — pokebuddy 설명서` : GUIDE_TITLE;
+    document.title = `${chapter.title} — pokebuddy 설명서`;
   }, [chapter]);
 
   return (
     <>
       <SiteHeader tone="light" current="guide" />
-      {/* 첫 화면은 카드 목차가 있어 왼쪽 목록 없이 넓게 */}
-      <div
-        className={cn(
-          'mx-auto grid w-full max-w-[1240px] gap-8 px-4 pt-8 pb-24 sm:px-6',
-          chapter && 'lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-12',
-        )}
-      >
-        <aside className={cn('hidden', chapter && 'lg:block')}>
+      <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-4 pt-8 pb-24 sm:px-6 lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-12">
+        <aside className="hidden lg:block">
           <nav aria-label="설명서 목차" className="sticky top-26 max-h-[calc(100vh-128px)] overflow-y-auto pb-4">
             <ChapterList current={chapter} />
           </nav>
@@ -50,13 +44,13 @@ export const GuidePage = () => {
 
         <main className="min-w-0">
           {/* 주소가 바뀌면 새로 그려 접힌 상태로 */}
-          <details key={hash} className={cn('mb-6 rounded-xl border border-border bg-card lg:hidden', !chapter && 'hidden')}>
+          <details key={hash} className="mb-6 rounded-xl border border-border bg-card lg:hidden">
             <summary className="cursor-pointer px-4 py-3 text-sm font-bold">목차</summary>
             <nav aria-label="설명서 목차" className="px-2 pb-3">
               <ChapterList current={chapter} />
             </nav>
           </details>
-          {chapter ? <ChapterView chapter={chapter} anchor={anchor} /> : <GuideHome />}
+          <ChapterView chapter={chapter} anchor={anchor} />
         </main>
       </div>
       <SiteFooter />
@@ -64,7 +58,7 @@ export const GuidePage = () => {
   );
 };
 
-const ChapterList = ({ current }: { current: GuideChapter | null }) => (
+const ChapterList = ({ current }: { current: GuideChapter }) => (
   <div className="flex flex-col gap-5">
     {GUIDE_GROUPS.map((group) => (
       <div key={group.key} className="flex flex-col gap-1">
@@ -117,9 +111,7 @@ const ChapterView = ({ chapter, anchor }: { chapter: GuideChapter; anchor: strin
         />
         <div className="relative flex flex-col gap-3 pr-24 sm:pr-40">
           <p className="flex items-center gap-2 font-pixel text-[12px] text-white/75">
-            <a href="#" className="hover:text-white">
-              설명서
-            </a>
+            설명서
             <span aria-hidden="true">›</span>
             {GROUP_LABELS[meta.group]}
           </p>
@@ -178,67 +170,6 @@ const PagerLink = ({ chapter, direction }: { chapter: GuideChapter; direction: '
         <Icon aria-hidden="true" className="size-4 text-primary" />
         {chapter.title}
       </span>
-    </a>
-  );
-};
-
-/** 첫 화면 — 묶음별 장 카드 */
-const GuideHome = () => (
-  <div className="flex flex-col gap-12">
-    <header className={cn('relative overflow-hidden rounded-2xl px-6 py-9 sm:px-10 sm:py-12', BAND_CLASS)}>
-      <div className="pointer-events-none absolute right-4 -bottom-4 hidden gap-1 sm:flex">
-        {[25, 133, 448].map((id) => (
-          <img key={id} src={spriteUrl(id)} alt="" width={96} height={96} className="pixelated size-28 drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
-        ))}
-      </div>
-      <h1 className="relative text-[30px] leading-tight font-extrabold tracking-tight md:text-[42px]">{GUIDE_TITLE}</h1>
-    </header>
-
-    {GUIDE_GROUPS.map((group) => (
-      <section key={group.key} aria-labelledby={`group-${group.key}`} className="flex flex-col gap-4">
-        <h2 id={`group-${group.key}`} className="flex items-center gap-2 font-pixel text-[14px] text-muted-foreground">
-          <span aria-hidden="true" className={cn('size-2 rounded-full', GROUP_DOT[group.key])} />
-          {group.label}
-        </h2>
-        <ul className="grid items-stretch gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {group.chapters.map((chapter) => (
-            <li key={chapter.id} className="flex">
-              <ChapterCard chapter={chapter} />
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))}
-  </div>
-);
-
-const ChapterCard = ({ chapter }: { chapter: GuideChapter }) => {
-  const meta = chapterMeta(chapter);
-  const Icon = meta.icon;
-  return (
-    <a
-      href={chapterHref(chapter)}
-      className="group relative flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card p-5 hover:bg-accent"
-    >
-      <img
-        src={spriteUrl(meta.pokemon)}
-        alt=""
-        width={96}
-        height={96}
-        loading="lazy"
-        className="pixelated pointer-events-none absolute -top-1 -right-1 size-20 opacity-90 transition-transform group-hover:-translate-y-1"
-      />
-      <span className="flex size-10 items-center justify-center rounded-xl bg-accent text-primary group-hover:bg-card">
-        <Icon aria-hidden="true" className="size-5" />
-      </span>
-      <span className="pr-14 text-[18px] font-extrabold">{chapter.title}</span>
-      {chapter.sections.length > 0 && (
-        <span className="flex flex-wrap gap-x-2.5 gap-y-1 text-[13px] text-muted-foreground">
-          {chapter.sections.map((section) => (
-            <span key={section.id}>{section.title}</span>
-          ))}
-        </span>
-      )}
     </a>
   );
 };

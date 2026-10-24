@@ -7,10 +7,10 @@ import type { GuideChapter } from './guideTypes';
  * 설명서 쪽 주소 — 해시 하나로 장과 위치를 정함
  * - `#<장 id>` → 그 장 맨 위
  * - `#<소제목 id>` → 그 소제목이 든 장을 열고 그 자리로 (옛 한 쪽 설명서의 앵커 그대로 동작)
- * - 비었거나 모르는 값 → 목차
+ * - 비었거나 모르는 값 → 첫 장(설치)
  */
 export interface GuideRoute {
-  chapter: GuideChapter | null;
+  chapter: GuideChapter;
   /** 장 안에서 스크롤할 제목 id. 장 맨 위면 null */
   anchor: string | null;
 }
@@ -39,7 +39,7 @@ const toRoute = (hash: string): GuideRoute => {
   try {
     id = decodeURIComponent(hash.slice(1));
   } catch (error) {
-    // 깨진 % 표기 — 목차로
+    // 깨진 % 표기 — 첫 장으로
     console.error(error);
   }
   const chapter = GUIDE_CHAPTERS.find((item) => item.id === id);
@@ -49,7 +49,7 @@ const toRoute = (hash: string): GuideRoute => {
   if (firstOfGroup) return { chapter: firstOfGroup, anchor: null };
   const owner = ANCHOR_TO_CHAPTER.get(id);
   if (owner) return { chapter: owner, anchor: id };
-  return { chapter: null, anchor: null };
+  return { chapter: GUIDE_CHAPTERS[0]!, anchor: null };
 };
 
 /** id 는 글자·숫자·- 만 — 그대로 해시에 씀 */

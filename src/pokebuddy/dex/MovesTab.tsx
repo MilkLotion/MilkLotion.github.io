@@ -19,17 +19,6 @@ interface SortState {
   dir: SortDir;
 }
 
-/** 처음 누를 때 방향 — 숫자는 큰 값이 쓸모 있는 쪽(대기는 짧은 쪽)부터 */
-const DEFAULT_DIR: Record<SortKey, SortDir> = {
-  name: 'asc',
-  type: 'asc',
-  class: 'asc',
-  power: 'desc',
-  accuracy: 'desc',
-  cooldown: 'asc',
-  users: 'desc',
-};
-
 /** 정렬 이름 — [오름, 내림] */
 const SORT_LABEL: Record<SortKey, [asc: string, desc: string]> = {
   name: ['이름 순', '이름 역순'],
@@ -41,17 +30,24 @@ const SORT_LABEL: Record<SortKey, [asc: string, desc: string]> = {
   users: ['적게 쓰는 순', '많이 쓰는 순'],
 };
 
+/**
+ * 정렬 없음(null) = 기본 순 — 많이 쓰는 순
+ * - 표 머리는 누를 때마다 오름차순 → 내림차순 → 정렬 취소(기본 순) (2026-10-25 사용자)
+ */
+const BASE_SORT: SortState = { key: 'users', dir: 'desc' };
+const DEFAULT_VALUE = 'default';
+
 /** 정렬 메뉴에 늘 보이는 것 — 표 머리로 고른 다른 정렬은 메뉴에 한 줄 더 생김 */
 const SORT_PRESETS: SortState[] = [
-  { key: 'users', dir: 'desc' },
   { key: 'power', dir: 'desc' },
   { key: 'cooldown', dir: 'asc' },
   { key: 'name', dir: 'asc' },
 ];
 
-const sortValue = (sort: SortState) => `${sort.key}-${sort.dir}`;
+const sortValue = (sort: SortState | null) => (sort ? `${sort.key}-${sort.dir}` : DEFAULT_VALUE);
 const sortLabel = (sort: SortState) => SORT_LABEL[sort.key][sort.dir === 'asc' ? 0 : 1];
-const parseSort = (value: string): SortState => {
+const parseSort = (value: string): SortState | null => {
+  if (value === DEFAULT_VALUE) return null;
   const [key, dir] = value.split('-') as [SortKey, SortDir];
   return { key, dir };
 };
@@ -74,8 +70,10 @@ const COMPARE: Record<SortKey, (a: MoveInfo, b: MoveInfo) => number> = {
   users: (a, b) => totalUsers(a) - totalUsers(b),
 };
 
-const compareBy = ({ key, dir }: SortState) => (a: MoveInfo, b: MoveInfo) =>
-  (dir === 'asc' ? COMPARE[key](a, b) : COMPARE[key](b, a)) || COMPARE.name(a, b);
+const compareBy = (sort: SortState | null) => {
+  const { key, dir } = sort ?? BASE_SORT;
+  return (a: MoveInfo, b: MoveInfo) => (dir === 'asc' ? COMPARE[key](a, b) : COMPARE[key](b, a)) || COMPARE.name(a, b);
+};
 
 const cooldownText = (move: MoveInfo) => (move.cooldown === null ? '—' : `${move.cooldown}초`);
 
@@ -91,7 +89,7 @@ export const MovesTab = () => {
   const [query, setQuery] = useState('');
   const [type, setType] = useState<PokemonType | null>(null);
   const [moveClass, setMoveClass] = useState<MoveClass | null>(null);
-  const [sort, setSort] = useState<SortState>(SORT_PRESETS[0]!);
+  const [sort, setSort] = useState<SortState | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
 
   const list = useMemo(() => {
@@ -104,13 +102,14 @@ export const MovesTab = () => {
     ).sort(compareBy(sort));
   }, [query, type, moveClass, sort]);
 
-  // 표 머리 — 같은 칸을 다시 누르면 방향만 뒤집음
+  // 표 머리 — 오름차순 → 내림차순 → 정렬 취소
   const handleHeaderSort = (key: SortKey) =>
-    setSort((current) =>
-      current.key === key ? { key, dir: current.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: DEFAULT_DIR[key] },
-    );
+    setSort((current) => {
+      if (current?.key !== key) return { key, dir: 'asc' };
+      return current.dir === 'asc' ? { key, dir: 'desc' } : null;
+    });
 
-  const sortOptions = SORT_PRESETS.some((preset) => sortValue(preset) === sortValue(sort)) ? SORT_PRESETS : [...SORT_PRESETS, sort];
+  const sortOptions = !sort || SORT_PRESETS.some((preset) => sortValue(preset) === sortValue(sort)) ? SORT_PRESETS : [...SORT_PRESETS, sort];
 
   return (
     <div className="flex flex-col gap-5">
@@ -147,6 +146,7 @@ export const MovesTab = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={DEFAULT_VALUE}>기본 순 (많이 쓰는 순)</SelectItem>
               {sortOptions.map((option) => (
                 <SelectItem key={sortValue(option)} value={sortValue(option)}>
                   {sortLabel(option)}
@@ -268,7 +268,7 @@ export const MovesTab = () => {
 interface SortHeaderProps {
   label: string;
   sortKey: SortKey;
-  sort: SortState;
+  sort: SortState | null;
   onSort: (key: SortKey) => void;
   align?: 'left' | 'right';
   className?: string;
@@ -276,7 +276,7 @@ interface SortHeaderProps {
 
 /** 누르면 정렬되는 표 머리 칸 — 지금 정렬 칸은 방향 화살표, 나머지는 흐린 위아래 화살표 */
 const SortHeader = ({ label, sortKey, sort, onSort, align = 'left', className }: SortHeaderProps) => {
-  const active = sort.key === sortKey;
+  const active = sort?.key === sortKey;
   const Icon = !active ? ArrowUpDown : sort.dir === 'asc' ? ArrowUp : ArrowDown;
   return (
     <th
